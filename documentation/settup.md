@@ -42,3 +42,38 @@
 ## adding to settings User json (ctrl + shift + p and type it)
 
   "editor.codeActionsOnSave": {"source.fixAll.eslint":true , "source.addMissingImports":true},
+
+## Font setup
+
+_layout.tsx_
+
+```typescript
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  //Adding variable under which we can use this font
+  variable:'--font-inter'
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-spaceGrotesk',
+})
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={`${inter.variable} ${spaceGrotesk.variable} `}>
+        {children}
+      </body>
+    </html>
+  )
+}
+
+
+```
