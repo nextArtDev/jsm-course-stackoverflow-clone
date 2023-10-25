@@ -26,7 +26,7 @@ const NavContent = () => {
           <SheetClose asChild key={item.route}>
             <Link
               href={item.route}
-              className={`flex items-center justify-start gap-4 rounded-lg bg-black/20  bg-transparent p-4 ${
+              className={`flex items-center justify-start gap-4 rounded-lg bg-black/20  p-4 ${
                 isActive
                   ? 'rounded-lg bg-black/60 text-secondary'
                   : 'text-secondary'
@@ -49,7 +49,7 @@ const NavContent = () => {
 }
 interface MobileNavProps {}
 
-const MobileNav: FC<MobileNavProps> = ({}) => {
+const MobileNav: FC<MobileNavProps> = () => {
   return (
     <div className="rounded-lg bg-gray-700">
       <Sheet>
@@ -62,7 +62,7 @@ const MobileNav: FC<MobileNavProps> = ({}) => {
             className="text-black sm:hidden  "
           />
         </SheetTrigger>
-        <SheetContent side={'left'} className="bg-gray-700 text-white">
+        <SheetContent side={'left'} className="bg-gray-900 text-white">
           <Link href={'/'} className="flex items-center gap-1">
             <Image src={SiteLogo} width={23} height={23} alt="DevFlow" />
             <p className="font-bold text-secondary">

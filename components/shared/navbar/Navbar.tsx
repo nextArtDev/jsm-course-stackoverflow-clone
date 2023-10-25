@@ -10,7 +10,7 @@ type Props = {}
 
 const Navbar = (props: Props) => {
   return (
-    <nav className=" bg-gray-700 flex justify-between items-center fixed z-50 w-full gap-5 dark:shadow-none sm:px-12 ">
+    <nav className=" bg-gray-900 flex justify-between items-center fixed z-50 w-full gap-5 dark:shadow-none sm:px-12 border-b border-gray-700 ">
       <Link href={'/'} className="flex items-center gap-1">
         <Image src={SiteLogo} width={23} height={23} alt="DevFlow" />
         <p className="font-bold font-spaceGrotesk max-sm:hidden text-white/50 ">
