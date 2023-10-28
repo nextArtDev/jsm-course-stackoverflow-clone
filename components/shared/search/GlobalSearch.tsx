@@ -7,7 +7,7 @@ interface GlobalSearchProps {}
 const GlobalSearch: FC<GlobalSearchProps> = () => {
   return (
     <div className="relative w-full max-w-[600px] max-lg:hidden ">
-      <div className=" relative flex min-h-[56px] flex-grow items-center gap-1 rounded-xl px-4">
+      <div className=" relative flex min-h-[56px] flex-grow items-center gap-1 rounded-xl px-4 ">
         <Image
           src={Search}
           alt="Search"
