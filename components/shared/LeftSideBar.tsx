@@ -10,7 +10,7 @@ interface LeftSideBarProps {}
 const LeftSideBar: FC<LeftSideBarProps> = () => {
   const pathname = usePathname()
   return (
-    <section className="bg-gray-900  border-gray-700 sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow max-sm:hidden lg:w-[266px] ">
+    <section className="bg-transparent  border-gray-700 sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow max-sm:hidden lg:w-[266px] ">
       <div className=" flex h-full flex-col flex-1 gap-6">
         {sidebarLinks.map((item) => {
           const isActive =

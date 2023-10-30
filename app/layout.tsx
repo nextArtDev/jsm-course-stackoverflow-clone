@@ -30,8 +30,10 @@ export default function RootLayout({
   return (
     // <ClerkProvider>
     <html lang="en">
-      <body className={` ${inter.variable} ${spaceGrotesk.variable}  `}>
-        <div className="absolute inset-0 -z-10 h-full w-full items-center  [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]" />
+      <body
+        className={`backgroundShape ${inter.variable} ${spaceGrotesk.variable}  `}
+      >
+        <div className="" />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

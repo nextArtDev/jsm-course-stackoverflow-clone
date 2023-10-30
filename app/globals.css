@@ -82,6 +82,12 @@ body {
 }
 
 @layer utilities {
+  .metalize {
+    @apply bg-gradient-to-tr from-slate-600 via-slate-800 to-slate-400 hover:bg-gradient-to-tl hover:from-slate-600 hover:via-slate-800 hover:to-slate-400;
+  }
+  .backgroundShape {
+    @apply [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)];
+  }
   .flex-center {
     @apply flex justify-center items-center;
   }

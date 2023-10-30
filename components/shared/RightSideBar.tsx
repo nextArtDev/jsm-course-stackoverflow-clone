@@ -37,7 +37,7 @@ const PopularTags = [
 ]
 const RightSideBar: FC<RightSideBarProps> = () => {
   return (
-    <section className="bg-gray-900 sticky right-0 top-0 flex h-screen flex-col overflow-y-auto border-l border-gray-700 p-6 pt-24 shadow max-xl:hidden w-[350px] ">
+    <section className="bg-transparent sticky right-0 top-0 flex min-h-screen flex-col overflow-y-auto border-l border-gray-700 p-6 pt-24 shadow max-xl:hidden w-[350px] ">
       <div>
         <h3 className="text-xl text-gray-200">Test Questions</h3>
       </div>
