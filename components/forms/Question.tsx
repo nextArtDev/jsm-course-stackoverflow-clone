@@ -19,6 +19,7 @@ import * as z from 'zod'
 import { QuestionSchema } from '@/lib/validations'
 import { Badge } from '../ui/badge'
 import Image from 'next/image'
+import { createQuestion } from '@/lib/actions/question.action'
 
 interface QuestionProps {}
 
@@ -37,11 +38,12 @@ const Question: FC<QuestionProps> = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof QuestionSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true)
     console.log(values)
     try {
       //
+      await createQuestion({})
     } catch (error) {
       //
     } finally {
@@ -126,6 +128,8 @@ const Question: FC<QuestionProps> = () => {
                   <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
+                    onBlur={field.onBlur}
+                    onEditorChange={(connect) => field.onChange(connect)}
                     initialValue=""
                     init={{
                       height: 350,
