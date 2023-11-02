@@ -7,6 +7,7 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { Button } from '@/components/ui/button'
 import { HomePageFilters } from '@/constants'
+import { getQuestions } from '@/lib/actions/question.action'
 import Link from 'next/link'
 
 const questions = [
@@ -37,7 +38,11 @@ const questions = [
     createdAt: '2023-09-01T12:00:00.000z',
   },
 ]
-export default function Home() {
+export default async function Home() {
+  const result = await getQuestions({})
+
+  console.log(result.question)
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center ">
@@ -63,8 +68,8 @@ export default function Home() {
         />
         <HomeFilters />
         <div className="mt-10 flex w-full flex-col gap-6">
-          {questions.length > 0 ? (
-            questions.map((question) => (
+          {result.question.length > 0 ? (
+            result.question.map((question) => (
               <QuestionCard
                 key={question._id}
                 _id={question._id}
