@@ -1,7 +1,9 @@
 import Answer from '@/components/forms/Answer'
+import AllAnswers from '@/components/shared/AllAnswers'
 import Metric from '@/components/shared/Metric'
 import ParseHTML from '@/components/shared/ParseHTML'
 import RenderTag from '@/components/shared/RenderTag'
+import Votes from '@/components/shared/Votes'
 import { getQuestionById } from '@/lib/actions/question.action'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,7 +35,18 @@ const page = async ({ params }: Props) => {
             />
             <p className="font-semibold  ">{result.author.name}</p>
           </Link>
-          <div className="flex justify-end">Voting</div>
+          <div className="flex justify-end">
+            <Votes
+              type="Question"
+              itemId={JSON.stringify(result._id)}
+              userId={JSON.stringify(userId)}
+              upvotes={result.upvotes.length}
+              hasupVoted={result.upvotes.includes(userId)}
+              downvotes={result.downvotes.length}
+              hasdownVoted={result.downvotes.includes(userId)}
+              hasSaved={result?.saved.includes(result._id)}
+            />
+          </div>
           <h2 className="mt-3.5 w-full text-left text-lg font-semibold">
             {result.title}
           </h2>
@@ -76,6 +89,11 @@ const page = async ({ params }: Props) => {
         ))}
       </div>
 
+      <AllAnswers
+        questionId={result._id}
+        userId={userId}
+        totalAnswers={result.answers.length}
+      />
       <Answer
         question={result.content}
         questionId={JSON.stringify(result._id)}
