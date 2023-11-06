@@ -1,9 +1,11 @@
 'use client'
 import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.actions'
+import { viewQuestion } from '@/lib/actions/interaction.action'
 import { downvoteQuestion, upvoteQuestion } from '@/lib/actions/question.action'
+import { toggleSaveQuestion } from '@/lib/actions/user.action'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
 interface VotesProps {
   type: string
@@ -29,7 +31,13 @@ const Votes: FC<VotesProps> = ({
   const pathname = usePathname()
   const router = useRouter()
 
-  const handleSave = () => {}
+  const handleSave = async () => {
+    await toggleSaveQuestion({
+      userId: JSON.parse(userId),
+      questionId: JSON.parse(itemId),
+      path: pathname,
+    })
+  }
   const handleVote = async (action: string) => {
     if (!userId) return
     if (action === 'upvote') {
@@ -76,10 +84,19 @@ const Votes: FC<VotesProps> = ({
       // todo: show a toast
     }
   }
+
+  // Views: When some one viewed
+  useEffect(() => {
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+    })
+  }, [itemId, userId, pathname, router])
+
   return (
     <div className="flex gap-5">
-      <div className="flex items-center justify-center gap-2 5">
-        <div className="flex items-center justify-center gap-1 5">
+      <div className="flex items-center justify-center gap-2.5">
+        <div className="flex items-center justify-center gap-1.5">
           <Image
             src={
               hasupVoted

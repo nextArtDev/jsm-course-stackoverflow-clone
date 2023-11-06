@@ -10,7 +10,7 @@ interface QuestionCardProps {
   tags: { _id: string; name: string }[]
   // author: { _id: string; name: string; picture: string }
   author: string
-  upvotes: number
+  upvotes: string[]
   views: number
   answers: Array<object>
   createdAt: Date
@@ -50,7 +50,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
         <Metric
           imgUrl={author.picture}
           alt="User"
-          value={upvotes}
+          value={author}
           title={` - asked ${getTimestamp(new Date(createdAt))}`}
           textStyles="text-sm md:text-md"
           href={`/profile/${author._id}`}
@@ -59,7 +59,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
         <Metric
           imgUrl="/assets/icons/like.svg"
           alt="Upvotes"
-          value={upvotes}
+          value={upvotes.length}
           title="Votes"
           textStyles="text-sm md:text-md"
         />
