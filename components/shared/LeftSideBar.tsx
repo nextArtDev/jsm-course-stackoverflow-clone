@@ -9,6 +9,8 @@ interface LeftSideBarProps {}
 
 const LeftSideBar: FC<LeftSideBarProps> = () => {
   const pathname = usePathname()
+  // const userId = useAuth()
+  const userId = '12346'
   return (
     <section className="bg-transparent  border-gray-700 sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow max-sm:hidden lg:w-[266px] ">
       <div className=" flex h-full flex-col flex-1 gap-6">
@@ -16,6 +18,14 @@ const LeftSideBar: FC<LeftSideBarProps> = () => {
           const isActive =
             (pathname.includes(item.route) && item.route.length > 1) ||
             pathname === item.route
+
+          if (item.route === '/profile') {
+            if (userId) {
+              item.route = `${item.route}/${userId}`
+            } else {
+              return null
+            }
+          }
           return (
             <Link
               key={item.route}

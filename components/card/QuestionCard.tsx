@@ -14,6 +14,7 @@ interface QuestionCardProps {
   views: number
   answers: Array<object>
   createdAt: Date
+  userId?: string
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
@@ -25,6 +26,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
   views,
   answers,
   createdAt,
+  userId,
 }) => {
   return (
     <section className="rounded-[10px] p-9 sm:px-11 text-slate-300 ">
