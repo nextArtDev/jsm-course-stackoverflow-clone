@@ -3,6 +3,7 @@ import Metric from '../shared/Metric'
 import Link from 'next/link'
 import { getTimestamp } from '@/lib/utils'
 import RenderTag from '../shared/RenderTag'
+import EditDeleteAction from '../shared/EditDeleteAction'
 
 interface AnswerCardProps {
   _id: string
@@ -21,6 +22,7 @@ const AnswerCard: FC<AnswerCardProps> = ({
   createdAt,
   userId,
 }) => {
+  // const showActionButtons = userId && userId === author.userId
   return (
     <Link
       href={`/question/${question?._id}/#${_id}`}
@@ -33,6 +35,10 @@ const AnswerCard: FC<AnswerCardProps> = ({
           </span>
           <h3 className="line-clamp-1 flex sm:hidden">{question.title}</h3>
         </div>
+        {/* <SignedIn>
+          {showActionButtons && <EditDeleteAction />}
+        </SignedIn> */}
+        <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
