@@ -1,6 +1,7 @@
 import LeftSideBar from '@/components/shared/LeftSideBar'
 import RightSideBar from '@/components/shared/RightSideBar'
 import Navbar from '@/components/shared/navbar/Navbar'
+import { Toaster } from '@/components/ui/toaster'
 import React, { ReactNode } from 'react'
 
 type Props = {
@@ -18,7 +19,7 @@ const Layout = ({ children }: Props) => {
         </section>
         <RightSideBar />
       </div>
-      Toaster
+      <Toaster />
     </main>
   )
 }

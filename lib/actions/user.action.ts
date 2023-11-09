@@ -9,6 +9,7 @@ import {
   GetUserByIdParams,
   GetUserStatsParams,
   ToggleSaveQuestionParams,
+  UpdateUserParams,
 } from './shared.types'
 import { revalidatePath } from 'next/cache'
 import Tag from '@/database/tag.model'
@@ -180,6 +181,23 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   } catch (error) {
     console.log(error)
 
+    throw error
+  }
+}
+
+export async function updateUser(params: UpdateUserParams) {
+  try {
+    connectToDatabase()
+
+    const { userId, updateData, path } = params
+
+    await User.findOneAndUpdate({ userId }, updateData, {
+      new: true,
+    })
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
     throw error
   }
 }
