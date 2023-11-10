@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import locale from 'date-fns/locale/en-US'
+import qs from 'query-string'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -59,4 +61,47 @@ export const getJoinedDate = (date: Date): string => {
   const year = date.getFullYear()
 
   return `${month} ${year}`
+}
+
+interface UrlQueryParams {
+  params: string
+  key: string
+  value: string | null
+}
+
+export const fromUrlQuery = ({ params, key, value }: UrlQueryParams) => {
+  const currentUrl = qs.parse(params)
+
+  currentUrl[key] = value
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  )
+}
+
+interface RemoveUrlQueryParams {
+  params: string
+  keysToRemove: string[]
+}
+export const removeKeysFromUrlQuery = ({
+  params,
+  keysToRemove,
+}: RemoveUrlQueryParams) => {
+  const currentUrl = qs.parse(params)
+
+  keysToRemove.forEach((key) => {
+    delete currentUrl[key]
+  })
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currentUrl,
+    },
+    { skipNull: true }
+  )
 }

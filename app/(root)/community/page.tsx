@@ -3,12 +3,13 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { UserFilters } from '@/constants'
 import { getAllUsers } from '@/lib/actions/user.action'
+import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
 
-type Props = {}
-
-async function page({}: Props) {
-  const result = await getAllUsers({})
+async function page({ searchParams }: SearchParamsProps) {
+  const result = await getAllUsers({
+    searchQuery: searchParams.q,
+  })
 
   return (
     <div className="text-slate-200">

@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { FC } from 'react'
 import Chevron from '../../public/assets/icons/chevron-right.svg'
 import RenderTag from './RenderTag'
+import { getHotQuestions } from '@/lib/actions/question.action'
+import { getTopPopularTags } from '@/lib/actions/tag.actions'
 interface RightSideBarProps {}
 
 const hotQuestions = [
@@ -35,7 +37,9 @@ const PopularTags = [
   { _id: 4, name: 'threejs', totalQuestios: 2 },
   { _id: 5, name: 'mongodb', totalQuestios: 5 },
 ]
-const RightSideBar: FC<RightSideBarProps> = () => {
+const RightSideBar: FC<RightSideBarProps> = async () => {
+  const hotQuestions = await getHotQuestions()
+  const PopularTags = await getTopPopularTags()
   return (
     <section className="bg-transparent sticky right-0 top-0 flex min-h-screen flex-col overflow-y-auto border-l border-gray-700 p-6 pt-24 shadow max-xl:hidden w-[350px] ">
       <div>
@@ -44,7 +48,7 @@ const RightSideBar: FC<RightSideBarProps> = () => {
       <div className="mt-8 flex w-full flex-col gap-[30px] text-gray-400 text-sm">
         {hotQuestions.map((question) => (
           <Link
-            href={`/questions/${question._id}`}
+            href={`/question/${question._id}`}
             key={question._id}
             className="flex cursor-pointer items-center justify-between gap-7"
           >
@@ -59,7 +63,7 @@ const RightSideBar: FC<RightSideBarProps> = () => {
               key={tag._id}
               _id={tag._id}
               name={tag.name}
-              totalQuestions={tag.totalQuestios}
+              totalQuestions={tag.numberOfQuestions}
               showCount
             />
           ))}

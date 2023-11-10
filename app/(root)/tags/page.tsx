@@ -3,12 +3,13 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { UserFilters } from '@/constants'
 import { getAllTags } from '@/lib/actions/tag.actions'
+import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
 
-type Props = {}
-
-async function page({}: Props) {
-  const result = await getAllTags({})
+async function page({ searchParams }: SearchParamsProps) {
+  const result = await getAllTags({
+    searchQuery: searchParams.q,
+  })
 
   return (
     <div className="text-slate-200">

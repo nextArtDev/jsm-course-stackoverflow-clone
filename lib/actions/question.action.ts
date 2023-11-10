@@ -15,12 +15,23 @@ import User from '@/database/user.model'
 import { revalidatePath } from 'next/cache'
 import Answer from '@/database/answer.model'
 import Interaction from '@/database/interaction.model'
+import { FilterQuery } from 'mongoose'
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase()
+    const { searchQuery } = params
 
-    const question = await Question.find({})
+    const query: FilterQuery<typeof Question> = {}
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, 'i') } },
+        { content: { $regex: new RegExp(searchQuery, 'i') } },
+      ]
+    }
+
+    const question = await Question.find(query)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
       .sort({ createdAt: -1 })
@@ -31,6 +42,7 @@ export async function getQuestions(params: GetQuestionsParams) {
     throw error
   }
 }
+
 export async function createQuestion(params: CreateQuestionParams) {
   try {
     connectToDatabase()
@@ -198,6 +210,24 @@ export async function editQuestion(params: EditQuestionParams) {
     await question.save()
 
     revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase()
+
+    const hotQuestions = await Question.find({})
+      .sort({
+        views: -1,
+        upvotes: -1,
+      })
+      .limit(5)
+
+    return hotQuestions
   } catch (error) {
     console.log(error)
     throw error

@@ -6,6 +6,7 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { QuestionFilters } from '@/constants'
 import { getSavedQuestions } from '@/lib/actions/user.action'
+import { SearchParamsProps } from '@/types'
 
 const questions = [
   {
@@ -35,10 +36,13 @@ const questions = [
     createdAt: '2023-09-01T12:00:00.000z',
   },
 ]
-export default async function Home() {
+export default async function Home({ searchParams }: SearchParamsProps) {
   // const {userId} = auth()
   const userId = '12346'
-  const result = await getSavedQuestions({ userId })
+  const result = await getSavedQuestions({
+    userId,
+    searchQuery: searchParams.q,
+  })
 
   return (
     <>

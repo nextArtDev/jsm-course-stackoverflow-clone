@@ -41,14 +41,15 @@ const Question: FC<QuestionProps> = ({
   const editorRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const parsedQuestionDetails = JSON.parse(questionDetails || '')
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || '')
 
-  const groupedTags = parsedQuestionDetails.tags.map((tag) => tag.name)
+  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name)
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: parsedQuestionDetails.title || '',
-      explanation: parsedQuestionDetails.content || '',
+      title: parsedQuestionDetails?.title || '',
+      explanation: parsedQuestionDetails?.content || '',
       tags: groupedTags || [],
     },
   })
@@ -162,7 +163,7 @@ const Question: FC<QuestionProps> = ({
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     onBlur={field.onBlur}
                     onEditorChange={(connect) => field.onChange(connect)}
-                    initialValue={parsedQuestionDetails.content || ''}
+                    initialValue={parsedQuestionDetails?.content || ''}
                     init={{
                       height: 350,
                       menubar: false,

@@ -8,6 +8,7 @@ import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { Button } from '@/components/ui/button'
 import { HomePageFilters } from '@/constants'
 import { getQuestions } from '@/lib/actions/question.action'
+import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
 
 const questions = [
@@ -38,8 +39,10 @@ const questions = [
     createdAt: '2023-09-01T12:00:00.000z',
   },
 ]
-export default async function Home() {
-  const result = await getQuestions({})
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+  })
 
   console.log(result.question)
 
