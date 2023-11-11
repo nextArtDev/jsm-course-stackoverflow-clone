@@ -11,9 +11,10 @@ import React from 'react'
 
 type Props = {
   params: { id: string }
+  searchParams: string
 }
 
-const page = async ({ params }: Props) => {
+const page = async ({ params, searchParams }: Props) => {
   const result = await getQuestionById({ questionId: params.id })
 
   // const {userId} = auth()
@@ -93,6 +94,8 @@ const page = async ({ params }: Props) => {
         questionId={result._id}
         userId={userId}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
       <Answer
         question={result.content}

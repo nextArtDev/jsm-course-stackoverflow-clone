@@ -1,5 +1,5 @@
 'use client'
-import { cn } from '@/lib/utils'
+import { cn, fromUrlQuery } from '@/lib/utils'
 import { FC } from 'react'
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 interface FilterProps {
   filters: { name: string; value: string }[]
@@ -21,9 +22,26 @@ const Filter: FC<FilterProps> = ({
   otherClasses,
   containerClasses,
 }) => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const paramFilter = searchParams.get('filter')
+
+  const handleUpdateParams = (value: string) => {
+    const newUrl = fromUrlQuery({
+      params: searchParams.toString(),
+      key: 'filter',
+      value,
+    })
+
+    router.push(newUrl, { scroll: false })
+  }
   return (
     <article className={cn('relative')}>
-      <Select>
+      <Select
+        onValueChange={(value) => handleUpdateParams(value)}
+        defaultValue={paramFilter || undefined}
+      >
         <SelectTrigger
           className={cn(
             'bg-gradient-to-tr from-slate-700 via-slate-900 to-slate-500 text-slate-200 shadow-sm shadow-slate-400 outline-none placeholder:text-slate-300',

@@ -57,13 +57,35 @@ export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase()
 
-    const { questionId } = params
+    const { questionId, sortBy } = params
 
-    const answers = await Answer.find({ question: questionId }).populate({
-      path: 'author',
-      model: User,
-      select: '_id userId name picture',
-    })
+    let sortOptions = {}
+
+    switch (sortBy) {
+      case 'highestUpvotes':
+        sortOptions = { upvotes: -1 }
+        break
+      case 'lowestUpvotes':
+        sortOptions = { upvotes: 1 }
+        break
+      case 'recent':
+        sortOptions = { createdAt: -1 }
+        break
+      case 'old':
+        sortOptions = { createdAt: 1 }
+        break
+
+      default:
+        break
+    }
+
+    const answers = await Answer.find({ question: questionId })
+      .populate({
+        path: 'author',
+        model: User,
+        select: '_id userId name picture',
+      })
+      .sort(sortOptions)
 
     return { answers }
   } catch (error) {

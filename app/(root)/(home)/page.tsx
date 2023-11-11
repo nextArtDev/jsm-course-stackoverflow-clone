@@ -42,9 +42,10 @@ const questions = [
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   })
 
-  console.log(result.question)
+  // console.log(result.question)
 
   return (
     <>
