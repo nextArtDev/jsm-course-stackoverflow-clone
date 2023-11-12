@@ -2,6 +2,7 @@
 
 import QuestionCard from '@/components/card/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { QuestionFilters } from '@/constants'
@@ -43,6 +44,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   })
 
   return (
@@ -88,6 +90,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             />
           )}
         </div>
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result?.isNext}
+        />
       </div>
     </>
   )

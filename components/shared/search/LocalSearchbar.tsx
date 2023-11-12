@@ -42,6 +42,7 @@ const LocalSearchbar: FC<LocalSearchbarProps> = ({
           params: searchParams.toString(),
           keysToRemove: ['q'],
         })
+        // to not scroll to top of the page
         router.push(newUrl, { scroll: false })
       }
     }, 300)
