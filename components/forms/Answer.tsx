@@ -12,13 +12,13 @@ import { createAnswer } from '@/lib/actions/answer.actions'
 import { usePathname } from 'next/navigation'
 
 interface AnswerProps {
-  question:string
-questionId:string
-authorId:string
+  question: string
+  questionId: string
+  authorId: string
 }
 
-const Answer: FC<AnswerProps> = ({question, questionId, authorId}) => {
-  const pathname= usePathname()
+const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
+  const pathname = usePathname()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const editorRef = useRef(null)
 
@@ -29,23 +29,22 @@ const Answer: FC<AnswerProps> = ({question, questionId, authorId}) => {
     },
   })
 
-  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema) => {
+  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
     setIsSubmitting(true)
     try {
       await createAnswer({
-        content:values.answer,
-        author:JSON.parse(authorId),
-        question:JSON.parse(questionId),
-        path:pathname
+        content: values.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionId),
+        path: pathname,
       })
 
       form.reset()
 
-      if(editorRef.current){
-        const editor = editorRef.current as any 
+      if (editorRef.current) {
+        const editor = editorRef.current as any
 
         editor.setContent('')
-
       }
     } catch (error) {
       console.log(error)

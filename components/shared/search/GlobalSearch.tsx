@@ -1,5 +1,5 @@
 'use client'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import Search from '../../../public/assets/icons/search.svg'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
@@ -18,6 +18,25 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
   const [search, setSearch] = useState(query || '')
   const [isOpen, setIsOpen] = useState(false)
 
+  const searchContainerRef = useRef(null)
+
+  useEffect(() => {
+    const handleOutsideClick = (event: any) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false)
+        setSearch('')
+      }
+    }
+    setIsOpen(false)
+
+    document.addEventListener('click', handleOutsideClick)
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  }, [pathname])
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (search) {
@@ -42,7 +61,10 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
   }, [search, router, pathname, searchParams, query])
 
   return (
-    <div className="relative w-full max-w-[600px] max-lg:hidden ">
+    <div
+      ref={searchContainerRef}
+      className="relative w-full max-w-[600px] max-lg:hidden "
+    >
       <div className=" relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4 ">
         <Image
           src={Search}

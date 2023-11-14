@@ -106,7 +106,7 @@ export async function createQuestion(params: CreateQuestionParams) {
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
-    connectToDatabase()
+    await connectToDatabase()
 
     const { questionId } = params
     const question = await Question.findById(questionId)

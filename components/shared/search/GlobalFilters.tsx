@@ -44,7 +44,7 @@ const GlobalFilters: FC<GlobalFiltersProps> = ({}) => {
             className={cn(
               `rounded-full hover:text-slate-500 hover:bg-none`,
               active === item.value
-                ? 'bg-rose-400 text-slate-200 hover:text-slate-500 hover:bg-non'
+                ? 'bg-rose-400 text-slate-200 '
                 : ''
             )}
             variant={'outline'}
