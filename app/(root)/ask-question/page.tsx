@@ -6,7 +6,7 @@ import React from 'react'
 type Props = {}
 
 const page = async (props: Props) => {
-  const userId = '123456'
+  const userId = '12346'
   // we should get it from clerk
   // if(!userId) redirect('/sign-in')
 
@@ -16,7 +16,8 @@ const page = async (props: Props) => {
     <div>
       <h1 className="text-2xl font-bold text-slate-200"> Ask a question</h1>
       <div className="mt-9">
-        <Question mongoUserId={JSON.stringify(mongoUser._id)} />
+        <Question mongoUserId={JSON.stringify(userId)} />
+        {/* <Question mongoUserId={JSON.stringify(mongoUser._id)} /> */}
         {/* <Question /> */}
       </div>
     </div>

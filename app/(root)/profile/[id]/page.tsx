@@ -54,7 +54,7 @@ const page: FC<URLProps> = async ({ params, searchParams }) => {
           </div>
           {userInfo?.user.bio && <p className="mt-8">{userInfo.user.bio}</p>}
         </div>
-        <div className="flex justify-end max-sm:mb-5 max-xm:w-full sm:mt-3 ">
+        <div className="max-xm:w-full flex justify-end max-sm:mb-5 sm:mt-3 ">
           {userId === userInfo?.user.userId && (
             <Link href={'/profile/edit'}>
               <Button variant={'outline'}>Edit Profile</Button>
@@ -64,8 +64,10 @@ const page: FC<URLProps> = async ({ params, searchParams }) => {
       </div>
 
       <Stats
+        reputation={userInfo.reputation}
         totalQuestions={userInfo?.totalQuestions}
         totalAnswers={userInfo?.totalAnswers}
+        badges={userInfo?.badgeCounts}
       />
 
       <div className="mt-10 flex gap-10">

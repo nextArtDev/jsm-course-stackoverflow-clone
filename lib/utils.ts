@@ -3,6 +3,9 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import locale from 'date-fns/locale/en-US'
 import qs from 'query-string'
+import { BadgeProps } from '@/components/ui/badge'
+import { BadgeCounts } from '@/types'
+import { BADGE_CRITERIA } from '@/constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -104,4 +107,32 @@ export const removeKeysFromUrlQuery = ({
     },
     { skipNull: true }
   )
+}
+
+interface BadgeParam {
+  criteria: {
+    type: keyof typeof BADGE_CRITERIA
+    count: number
+  }[]
+}
+
+export const assignBadges = (params: BadgeParam) => {
+  const badgeCounts: BadgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  }
+  const { criteria } = params
+
+  criteria.forEach((item) => {
+    const { type, count } = item
+    const badgeLevels: any = BADGE_CRITERIA[type]
+
+    Object.keys(badgeLevels).forEach((level: any) => {
+      if (count >= badgeLevels[level]) {
+        badgeCounts[level as keyof BadgeCounts] += 1
+      }
+    })
+  })
+  return badgeCounts
 }

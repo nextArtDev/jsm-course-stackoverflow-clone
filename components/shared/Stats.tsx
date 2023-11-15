@@ -3,15 +3,23 @@ import { FC } from 'react'
 import GoldImage from '../../public/assets/icons/gold-medal.svg'
 import SilverImage from '../../public/assets/icons/silver-medal.svg'
 import BronzeImage from '../../public/assets/icons/bronze-medal.svg'
+import { BadgeCounts } from '@/types'
 interface StatsProps {
-  totalQuestions: number | undefined
-  totalAnswers: number | undefined
+  totalQuestions: number
+  totalAnswers: number
+  badges: BadgeCounts
+  reputation: number
 }
 
-const Stats: FC<StatsProps> = ({ totalQuestions, totalAnswers }) => {
+const Stats: FC<StatsProps> = ({
+  totalQuestions,
+  totalAnswers,
+  badges,
+  reputation,
+}) => {
   return (
     <div className="mt-10">
-      <h4 className="font-semibold ">Stats</h4>
+      <h4 className="font-semibold ">Stats - {reputation}</h4>
       <div className="xs:grid-cols-2 mt-5 grid grid-cols-1 gap-5 md:grid-cols-4 ">
         <div className="flex flex-wrap items-center justify-evenly gap-4 rounded-md border shadow-lime-200 ">
           <div>
@@ -23,9 +31,21 @@ const Stats: FC<StatsProps> = ({ totalQuestions, totalAnswers }) => {
             <p>Answers</p>
           </div>
         </div>
-        <StatsCard imgUrl={GoldImage.src} value={0} title="Gold Badges" />
-        <StatsCard imgUrl={SilverImage.src} value={0} title="Silver Badges" />
-        <StatsCard imgUrl={BronzeImage.src} value={0} title="Bronze Badges" />
+        <StatsCard
+          imgUrl={GoldImage.src}
+          value={badges.GOLD}
+          title="Gold Badges"
+        />
+        <StatsCard
+          imgUrl={SilverImage.src}
+          value={badges.SILVER}
+          title="Silver Badges"
+        />
+        <StatsCard
+          imgUrl={BronzeImage.src}
+          value={badges.BRONZE}
+          title="Bronze Badges"
+        />
       </div>
     </div>
   )
