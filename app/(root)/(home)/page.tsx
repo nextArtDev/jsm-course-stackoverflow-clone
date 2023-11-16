@@ -10,7 +10,15 @@ import { Button } from '@/components/ui/button'
 import { HomePageFilters } from '@/constants'
 import { getQuestions } from '@/lib/actions/question.action'
 import { SearchParamsProps } from '@/types'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Home | DevFlow',
+  description:
+    'A community-driven platform for asking and answering programming questions',
+ 
+}
 
 const questions = [
   {

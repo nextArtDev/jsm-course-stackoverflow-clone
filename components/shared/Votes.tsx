@@ -6,6 +6,7 @@ import { toggleSaveQuestion } from '@/lib/actions/user.action'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { FC, useEffect } from 'react'
+import { toast } from '../ui/use-toast'
 
 interface VotesProps {
   type: string
@@ -37,9 +38,20 @@ const Votes: FC<VotesProps> = ({
       questionId: JSON.parse(itemId),
       path: pathname,
     })
+    toast({
+      title: `Question ${
+        !hasSaved ? 'Saved in' : 'Removed from'
+      } your collection`,
+      variant: !hasSaved ? 'default' : 'destructive',
+    })
   }
   const handleVote = async (action: string) => {
-    if (!userId) return
+    if (!userId)
+      return toast({
+        title: 'Please log in',
+        description: 'You must be logged in to perform this action',
+        variant: 'destructive',
+      })
     if (action === 'upvote') {
       if (type === 'Question') {
         await upvoteQuestion({
@@ -60,7 +72,10 @@ const Votes: FC<VotesProps> = ({
       }
 
       // todo: show a toast
-      return
+      return toast({
+        title: `Upvote ${!hasupVoted ? 'Successfull' : 'Removed'}`,
+        variant: !hasupVoted ? 'default' : 'destructive',
+      })
     }
     if (action === 'downvote') {
       if (type === 'Question') {
@@ -82,6 +97,10 @@ const Votes: FC<VotesProps> = ({
       }
 
       // todo: show a toast
+      return toast({
+        title: `Downvote ${!hasupVoted ? 'Successful' : 'Removed'}`,
+        variant: !hasupVoted ? 'default' : 'destructive',
+      })
     }
   }
 

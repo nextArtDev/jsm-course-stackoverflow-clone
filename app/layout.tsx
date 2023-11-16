@@ -5,6 +5,7 @@ import '../styles/prism.css'
 // import { ClerkProvider } from '@clerk/nextjs'
 import React from 'react'
 import { ThemeProvider } from '@/context/ThemeProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,6 +22,9 @@ export const metadata: Metadata = {
   title: 'DevFlow',
   description:
     'A community-driven platform for asking and answering programming questions',
+  icons: {
+    icon: '/assets/images/site-logo.svg',
+  },
 }
 
 export default function RootLayout({
@@ -35,7 +39,10 @@ export default function RootLayout({
         className={`backgroundShape ${inter.variable} ${spaceGrotesk.variable}  `}
       >
         <div className="" />
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
     // </ClerkProvider>
