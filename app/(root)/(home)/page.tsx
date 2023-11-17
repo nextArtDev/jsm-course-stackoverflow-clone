@@ -8,7 +8,10 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { Button } from '@/components/ui/button'
 import { HomePageFilters } from '@/constants'
-import { getQuestions } from '@/lib/actions/question.action'
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from '@/lib/actions/question.action'
 import { SearchParamsProps } from '@/types'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -17,7 +20,6 @@ export const metadata: Metadata = {
   title: 'Home | DevFlow',
   description:
     'A community-driven platform for asking and answering programming questions',
- 
 }
 
 const questions = [
@@ -49,11 +51,29 @@ const questions = [
   },
 ]
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  })
+  const userId = '12346'
+
+  let result
+  if (searchParams?.filter === 'recommended') {
+    if (!userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      })
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      }
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    })
+  }
 
   // console.log(result.question)
 

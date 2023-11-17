@@ -29,8 +29,8 @@ interface ParseHTMLProps {
   data: string
 }
 
-const ParseHTML: FC<ParseHTMLProps> = ({}) => {
-  return <div>{parse(data)}</div>
+const ParseHTML: FC<ParseHTMLProps> = ({ data }) => {
+  return <div className="w-full min-w-full">{parse(data)}</div>
 }
 
 export default ParseHTML

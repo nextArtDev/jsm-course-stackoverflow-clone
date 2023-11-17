@@ -64,27 +64,29 @@ const QuestionCard: FC<QuestionCardProps> = ({
           href={`/profile/${author._id}`}
           isAuthor
         />
-        <Metric
-          imgUrl="/assets/icons/like.svg"
-          alt="Upvotes"
-          value={upvotes.length}
-          title="Votes"
-          textStyles="text-sm md:text-md"
-        />
-        <Metric
-          imgUrl="/assets/icons/message.svg"
-          alt="Message"
-          value={answers.length}
-          title="Answers"
-          textStyles="text-sm md:text-md"
-        />
-        <Metric
-          imgUrl="/assets/icons/eye.svg"
-          alt="Views"
-          value={views}
-          title="Views"
-          textStyles="text-sm md:text-md"
-        />
+        <div className="max-sm:flex-start flex items-center gap-3 max-sm:flex-wrap ">
+          <Metric
+            imgUrl="/assets/icons/like.svg"
+            alt="Upvotes"
+            value={upvotes.length}
+            title="Votes"
+            textStyles="text-sm md:text-md"
+          />
+          <Metric
+            imgUrl="/assets/icons/message.svg"
+            alt="Message"
+            value={answers.length}
+            title="Answers"
+            textStyles="text-sm md:text-md"
+          />
+          <Metric
+            imgUrl="/assets/icons/eye.svg"
+            alt="Views"
+            value={views}
+            title="Views"
+            textStyles="text-sm md:text-md"
+          />
+        </div>
       </div>
     </section>
   )
