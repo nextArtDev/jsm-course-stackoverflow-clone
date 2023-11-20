@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-
+const { fontFamily } = require('tailwindcss/defaultTheme')
 const config: Config = {
   // content: [
   //   './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -20,6 +20,12 @@ const config: Config = {
       screens: { '2xl': '1400px' },
     },
     extend: {
+      fontFamily: {
+        farsi: ['var(--font-sans)', ...fontFamily.sans],
+        farsiAdad: ['var(--font-adad)', ...fontFamily.sans],
+        farsiAdadBold: ['var(--font-adad-bold)', ...fontFamily.sans],
+        farsiAdadReg: ['var(--font-adad-reg)', ...fontFamily.sans],
+      },
       colors: {
         primary: { 500: '#FF7000', 100: '#FFF1E6' },
         dark: {
@@ -39,10 +45,10 @@ const config: Config = {
         },
         'accent-blue': '#1DA1F2',
       },
-      fontFamily: {
-        inter: ['var(--font-inter)'],
-        spaceGrotesk: ['var(--font-spaceGrotesk)'],
-      },
+      // fontFamily: {
+      //   inter: ['var(--font-inter)'],
+      //   spaceGrotesk: ['var(--font-spaceGrotesk)'],
+      // },
       boxShadow: {
         'light-100':
           '0px 12px 20px 0px rgba(184, 184, 184, 0.03), 0px 6px 12px 0px',
