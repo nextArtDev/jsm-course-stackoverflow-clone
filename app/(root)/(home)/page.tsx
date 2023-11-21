@@ -8,6 +8,7 @@ import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
 import { Button } from '@/components/ui/button'
 import { HomePageFilters } from '@/constants'
+import { getCurrentUser } from '@/lib/actions/getCurrentUser'
 import {
   getQuestions,
   getRecommendedQuestions,
@@ -51,6 +52,8 @@ const questions = [
   },
 ]
 export default async function Home({ searchParams }: SearchParamsProps) {
+  const currentUser = await getCurrentUser()
+  console.log('user', currentUser?.name)
   const userId = '12346'
 
   let result

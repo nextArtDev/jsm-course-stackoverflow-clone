@@ -19,6 +19,7 @@ import { toast } from '@/components/ui/use-toast'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
+import { Loader } from 'lucide-react'
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -26,10 +27,10 @@ const FormSchema = z.object({
   }),
   phone: z
     .string()
-    .regex(new RegExp('^09\\d{9}$'), {
+    .regex(/^09\d{9}$/, {
       message: 'شماره موبایل معتبر نیست.',
     })
-    .regex(new RegExp('^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$'), {
+    .regex(/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/, {
       message: 'شماره موبایل معتبر نیست.',
     }),
   password: z.string().min(8, {
@@ -48,9 +49,9 @@ export function UserSignUpForm() {
     },
   })
 
-  //react-query
+  // react-query
 
-  const { mutate: signUp, isLoading } = useMutation({
+  const { mutate: signUp, isPending } = useMutation({
     mutationFn: async ({
       name,
       password,
@@ -101,7 +102,7 @@ export function UserSignUpForm() {
     },
   })
 
-  //form submition
+  // form submition
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // console.log(data)
@@ -187,9 +188,10 @@ export function UserSignUpForm() {
         />
         <Button
           type="submit"
-          disabled={isLoading}
-          className="bg-blue-950 hover:bg-blue-500 hover:text-white "
+          disabled={isPending}
+          className="bg-white hover:bg-blue-500 hover:text-white"
         >
+          {isPending && <Loader className="h-4 w-4 animate-spin gap-2" />}
           ارسال کد تایید به شماره موبایل
         </Button>
       </form>
