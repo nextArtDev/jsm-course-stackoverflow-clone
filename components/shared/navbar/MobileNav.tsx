@@ -17,7 +17,7 @@ import { usePathname } from 'next/navigation'
 const NavContent = () => {
   const pathname = usePathname()
   return (
-    <section className=" flex h-full flex-col gap-6 pt-16">
+    <section className=" flex  h-full flex-col gap-6 pt-16  ">
       {sidebarLinks.map((item) => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
@@ -28,8 +28,8 @@ const NavContent = () => {
               href={item.route}
               className={`flex items-center justify-start gap-4 rounded-lg bg-black/20  p-4 ${
                 isActive
-                  ? 'rounded-lg bg-black/60 text-secondary'
-                  : 'text-secondary'
+                  ? 'rounded-lg bg-black/60 font-semibold text-gray-200 '
+                  : 'text-gray-400'
               }`}
             >
               <Image
@@ -37,7 +37,7 @@ const NavContent = () => {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={``}
+                className={`invert-0`}
               />
               <p>{item.label}</p>
             </Link>
@@ -51,7 +51,7 @@ interface MobileNavProps {}
 
 const MobileNav: FC<MobileNavProps> = () => {
   return (
-    <div className="rounded-lg bg-gray-700">
+    <div className="rounded-lg bg-transparent ">
       <Sheet>
         <SheetTrigger asChild>
           <Image

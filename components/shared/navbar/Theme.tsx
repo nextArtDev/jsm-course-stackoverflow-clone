@@ -6,8 +6,6 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from '@/components/ui/menubar'
 import { useTheme } from '@/context/ThemeProvider'
@@ -20,7 +18,7 @@ const Theme = () => {
   return (
     <Menubar className="relative border-none bg-transparent shadow-none">
       <MenubarMenu>
-        <MenubarTrigger className="focus:bg-foregraoud data-[state=open]:bg-gray-700 ">
+        <MenubarTrigger className="focus:bg-black/40 data-[state=open]:bg-gray-700 ">
           {mode === 'light' ? (
             <Image
               src={Sun}
@@ -39,7 +37,7 @@ const Theme = () => {
             />
           )}
         </MenubarTrigger>
-        <MenubarContent className=" absolute right-[3rem] mt-3 min-w-[120px] rounded border py-2  ">
+        <MenubarContent className=" absolute right-2 mt-3 min-w-[120px] rounded border py-2  ">
           {themes.map((item) => (
             <MenubarItem
               key={item.value}
@@ -52,7 +50,7 @@ const Theme = () => {
                   localStorage.removeItem('theme')
                 }
               }}
-              className="flex items-center gap-4 px-2.5 py-2"
+              className="flex justify-between gap-4 px-2.5 py-2"
             >
               <Image
                 src={item.icon}
@@ -62,19 +60,15 @@ const Theme = () => {
                 className={`${mode === item.value && 'active-theme'}`}
               />
               <p
-                className={`body-semibold  ${
-                  mode === item.value ? 'text-black' : 'text-black/40'
+                // eslint-disable-next-line tailwindcss/no-custom-classname
+                className={`body-semibold text-gray-800 dark:text-gray-300  ${
+                  mode === item.value ? 'text-white/80 ' : 'text-white/60  '
                 }`}
               >
                 {item.label}
               </p>
             </MenubarItem>
           ))}
-          {/* <MenubarItem>New Window</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem>Share</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem>Print</MenubarItem> */}
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
