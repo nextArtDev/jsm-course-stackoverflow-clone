@@ -83,7 +83,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center ">
-        <h1 className="font-bold text-gray-100"> All Questions</h1>
+        <h1 className="font-bold text-gray-100  "> All Questions</h1>
         <Link href={'/ask-question'} className="flex justify-end max-sm:w-full">
           <Button className="min-h-[46px] bg-gradient-to-tr from-slate-600 via-slate-800 to-slate-400 px-4 py-3 text-gray-200 shadow-inner shadow-slate-400  ">
             Ask A Question

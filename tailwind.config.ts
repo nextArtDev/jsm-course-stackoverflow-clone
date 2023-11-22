@@ -25,6 +25,8 @@ const config: Config = {
         farsiAdad: ['var(--font-adad)', ...fontFamily.sans],
         farsiAdadBold: ['var(--font-adad-bold)', ...fontFamily.sans],
         farsiAdadReg: ['var(--font-adad-reg)', ...fontFamily.sans],
+        farsiSnapReg: ['var(--font-snappReg)', ...fontFamily.sans],
+        farsiAnjoman: ['var(--font-anjoman)', ...fontFamily.sans],
       },
       colors: {
         primary: { 500: '#FF7000', 100: '#FFF1E6' },

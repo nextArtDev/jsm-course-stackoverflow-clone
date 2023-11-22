@@ -35,11 +35,20 @@ const primaryFont = localFont({
   src: '../public/fonts/FarsiFont.woff2',
   variable: '--font-sans',
 })
+const SnapWebReg = localFont({
+  src: '../public/fonts/SnappWeb2.0-Regular.woff',
+  variable: '--font-snappReg',
+})
+const Anjoman = localFont({
+  src: '../public/fonts/AnjomanVariableGX.ttf',
+  variable: '--font-anjoman',
+})
 
 export const metadata: Metadata = {
   title: 'DevFlow',
   description:
     'A community-driven platform for asking and answering programming questions',
+  // Changing the fav-icon
   icons: {
     icon: '/assets/images/site-logo.svg',
   },
@@ -57,7 +66,7 @@ export default function RootLayout({
         className={`backgroundShape ${inter.variable} ${spaceGrotesk.variable}  `}
       > */}
       <body
-        className={`${primaryFont.variable} font-farsi adad  antialiased  `}
+        className={`${primaryFont.variable} ${Anjoman.variable} ${SnapWebReg.variable} font-snappReg adad  antialiased  `}
       >
         <ReactQueryProvider>
           <ThemeProvider
