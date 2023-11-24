@@ -1,14 +1,14 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import { cn, fromUrlQuery, removeKeysFromUrlQuery } from '@/lib/utils'
-import Image from 'next/image'
+import Image, { type ImageProps } from 'next/image'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
 interface LocalSearchbarProps {
   route: string
   iconPosition: string
-  imgSrc: string
+  imgSrc: ImageProps
   otherClasses?: string
   placeholder?: string
 }
@@ -58,7 +58,7 @@ const LocalSearchbar: FC<LocalSearchbarProps> = ({
     >
       {iconPosition === 'left' && (
         <Image
-          src={imgSrc}
+          src={imgSrc.src}
           alt="search icon"
           width={24}
           height={24}
@@ -76,7 +76,7 @@ const LocalSearchbar: FC<LocalSearchbarProps> = ({
       />
       {iconPosition === 'right' && (
         <Image
-          src={imgSrc}
+          src={imgSrc.src}
           alt="search icon"
           width={24}
           height={24}

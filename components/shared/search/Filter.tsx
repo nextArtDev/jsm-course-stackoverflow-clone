@@ -37,22 +37,25 @@ const Filter: FC<FilterProps> = ({
     router.push(newUrl, { scroll: false })
   }
   return (
-    <article className={cn('relative')}>
+    <article className={cn('relative', containerClasses)}>
       <Select
         onValueChange={(value) => handleUpdateParams(value)}
         defaultValue={paramFilter || undefined}
       >
         <SelectTrigger
           className={cn(
-            'bg-gradient-to-tr from-slate-700 via-slate-900 to-slate-500 text-slate-200 shadow-sm shadow-slate-400 outline-none placeholder:text-slate-300',
+            ' bg-gradient-to-tr from-slate-700 via-slate-900 to-slate-500 text-slate-200 shadow-sm shadow-slate-400 outline-none placeholder:text-slate-300',
             otherClasses
           )}
         >
-          <div className="line-clamp-1 flex-1 text-left ">
-            <SelectValue placeholder="Select a filter" />
+          <div className=" line-clamp-1 flex-1 pr-4 text-right ">
+            <SelectValue placeholder="یک فیلتر انتخاب کنید" />
           </div>
         </SelectTrigger>
-        <SelectContent className="bg-gradient-to-tr from-slate-700 via-slate-900 to-slate-500 text-slate-200">
+        <SelectContent
+          dir="rtl"
+          className=" bg-gradient-to-tr from-slate-700 via-slate-900 to-slate-500 text-slate-200 "
+        >
           <SelectGroup>
             {filters.map((item) => (
               <SelectItem key={item.value} value={item.value}>

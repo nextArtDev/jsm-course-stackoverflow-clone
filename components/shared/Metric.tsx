@@ -33,7 +33,7 @@ const Metric: FC<MetricProps> = ({
       <p className={`${textStyles} flex items-center gap-1`}>
         {value}
         <span
-          className={`text-sm line-clamp-1 ${isAuthor ? 'max-sm:hidden' : ''} `}
+          className={`line-clamp-1 text-sm ${isAuthor ? 'max-sm:hidden' : ''} `}
         >
           {title}
         </span>

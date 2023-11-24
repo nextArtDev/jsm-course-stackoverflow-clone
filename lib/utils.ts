@@ -11,43 +11,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const formatDistanceLocale = {
-  lessThanXSeconds: 'just now',
-  xSeconds: 'just now',
-  halfAMinute: 'just now',
-  lessThanXMinutes: '{{count}}m',
-  xMinutes: '{{count}}m',
-  aboutXHours: '{{count}}h',
-  xHours: '{{count}}h',
-  xDays: '{{count}}d',
-  aboutXWeeks: '{{count}}w',
-  xWeeks: '{{count}}w',
-  aboutXMonths: '{{count}}m',
-  xMonths: '{{count}}m',
-  aboutXYears: '{{count}}y',
-  xYears: '{{count}}y',
-  overXYears: '{{count}}y',
-  almostXYears: '{{count}}y',
-}
+// const formatDistanceLocale = {
+//   lessThanXSeconds: 'just now',
+//   xSeconds: 'just now',
+//   halfAMinute: 'just now',
+//   lessThanXMinutes: '{{count}}m',
+//   xMinutes: '{{count}}m',
+//   aboutXHours: '{{count}}h',
+//   xHours: '{{count}}h',
+//   xDays: '{{count}}d',
+//   aboutXWeeks: '{{count}}w',
+//   xWeeks: '{{count}}w',
+//   aboutXMonths: '{{count}}m',
+//   xMonths: '{{count}}m',
+//   aboutXYears: '{{count}}y',
+//   xYears: '{{count}}y',
+//   overXYears: '{{count}}y',
+//   almostXYears: '{{count}}y',
+// }
 
-function formatDistance(token: string, count: number, options?: any): string {
-  options = options || {}
+// function formatDistance(token: string, count: number, options?: any): string {
+//   options = options || {}
 
-  const result = formatDistanceLocale[
-    token as keyof typeof formatDistanceLocale
-  ].replace('{{count}}', count.toString())
+//   const result = formatDistanceLocale[
+//     token as keyof typeof formatDistanceLocale
+//   ].replace('{{count}}', count.toString())
 
-  if (options.addSuffix) {
-    if (options.comparison > 0) {
-      return 'in ' + result
-    } else {
-      if (result === 'just now') return result
-      return result + ' ago'
-    }
-  }
+//   if (options.addSuffix) {
+//     if (options.comparison > 0) {
+//       return 'in ' + result
+//     } else {
+//       if (result === 'just now') return result
+//       return result + ' ago'
+//     }
+//   }
 
-  return result
-}
+//   return result
+// }
 
 export function getTimestamp(date: Date): string {
   return formatDistanceToNowStrict(date, {
@@ -135,4 +135,63 @@ export const assignBadges = (params: BadgeParam) => {
     })
   })
   return badgeCounts
+}
+
+const formatDistanceLocale = {
+  lessThanXSeconds: 'همین الان',
+  xSeconds: 'همین الان',
+  halfAMinute: 'همین الان',
+  lessThanXMinutes: '{{count}} دقیقه',
+  xMinutes: '{{count}} دقیقه',
+  aboutXHours: '{{count}} ساعت',
+  xHours: '{{count}} ساعت',
+  xDays: '{{count}} روز',
+  aboutXWeeks: '{{count}} هفته',
+  xWeeks: '{{count}} هفته',
+  aboutXMonths: '{{count}} ماه',
+  xMonths: '{{count}} ماه',
+  aboutXYears: '{{count}} سال',
+  xYears: '{{count}} سال',
+  overXYears: '{{count}} سال',
+  almostXYears: '{{count}} سال',
+}
+
+function formatDistance(token: string, count: number, options?: any): string {
+  options = options || {}
+
+  const result = formatDistanceLocale[
+    token as keyof typeof formatDistanceLocale
+  ].replace('{{count}}', count.toString())
+
+  if (options.addSuffix) {
+    if (options.comparison > 0) {
+      return 'در ' + result
+    } else {
+      if (result === 'همین الان') return result
+      return result + ' پیش '
+    }
+  }
+
+  return result
+}
+
+export function formatTimeToNow(date: Date): string {
+  return formatDistanceToNowStrict(date, {
+    addSuffix: true,
+    locale: {
+      ...locale,
+      formatDistance,
+    },
+  })
+}
+
+export function formatLargeNumber(number: number): string {
+  switch (true) {
+    case number >= 1000000:
+      return (number / 1000000).toFixed(1) + 'میلیون'
+    case number >= 1000:
+      return (number / 1000).toFixed(1) + 'هزار'
+    default:
+      return number + ''
+  }
 }

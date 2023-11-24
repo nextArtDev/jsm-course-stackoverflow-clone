@@ -129,19 +129,19 @@ export const TagFilters = [
 ]
 export const HomePageFilters = [
   {
-    name: 'Newest',
+    name: 'جدیدترین',
     value: 'newest',
   },
   {
-    name: 'Recommended',
+    name: 'پیشنهادی',
     value: 'recommended',
   },
   {
-    name: 'Frequent',
+    name: 'پرتکرار',
     value: 'frequent',
   },
   {
-    name: 'Unanswered',
+    name: 'بدون جواب',
     value: 'unanswered',
   },
 ]
