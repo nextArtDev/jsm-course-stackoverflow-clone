@@ -16,6 +16,7 @@ import {
 import { SearchParamsProps } from '@/types'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import SearchIcon from 'public/assets/icons/search.svg'
 
 export const metadata: Metadata = {
   title: 'Home | DevFlow',
@@ -25,11 +26,11 @@ export const metadata: Metadata = {
 
 const questions = [
   {
-    _id: 1,
+    id: 1,
     title: 'Cascading Deletes in SQLAlchemy',
     tags: [
-      { _id: 1, name: 'python' },
-      { _id: 2, name: 'sql' },
+      { id: 1, name: 'python' },
+      { id: 2, name: 'sql' },
     ],
     author: 'John Doe',
     upvotes: 10,
@@ -38,14 +39,14 @@ const questions = [
     createdAt: '2023-09-01T12:00:00.000z',
   },
   {
-    _id: 2,
+    id: 2,
     title: 'How to create CSS grid',
     tags: [
-      { _id: 1, name: 'CSS' },
-      { _id: 2, name: 'TailwindCSS' },
+      { id: 1, name: 'CSS' },
+      { id: 2, name: 'TailwindCSS' },
     ],
     author: 'John Doe',
-    upvotes: 10,
+    upvotes: 14000.5,
     views: 100,
     answers: 2,
     createdAt: '2023-09-01T12:00:00.000z',
@@ -53,8 +54,9 @@ const questions = [
 ]
 export default async function Home({ searchParams }: SearchParamsProps) {
   const currentUser = await getCurrentUser()
-  console.log('user', currentUser?.name)
-  const userId = '12346'
+  // console.log('user', currentUser?.name)
+  // const userId = '12346'
+  const userId = currentUser?.id
 
   let result
   if (searchParams?.filter === 'recommended') {
@@ -83,10 +85,10 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center ">
-        <h1 className="font-bold text-gray-100  "> All Questions</h1>
+        <h1 className="font-bold text-gray-100  ">همه سوالات</h1>
         <Link href={'/ask-question'} className="flex justify-end max-sm:w-full">
           <Button className="min-h-[46px] bg-gradient-to-tr from-slate-600 via-slate-800 to-slate-400 px-4 py-3 text-gray-200 shadow-inner shadow-slate-400  ">
-            Ask A Question
+            سوال بپرسید
           </Button>
         </Link>
       </div>
@@ -94,8 +96,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         <LocalSearchbar
           route="/"
           iconPosition="left"
-          imgSrc="/assets/icons/search.svg"
-          placeholder="Search for Question"
+          imgSrc={SearchIcon}
+          placeholder="جست‌وجوی سوالات"
           otherClasses="flex-1"
         />
         <Filter
@@ -103,13 +105,15 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
         />
+
         <HomeFilters />
+
         <div className="mt-10 flex w-full flex-col gap-6">
-          {result.question.length > 0 ? (
-            result.question.map((question) => (
+          {questions?.length ? (
+            questions.map((question) => (
               <QuestionCard
-                key={question._id}
-                _id={question._id}
+                key={question.id}
+                id={question.id}
                 title={question.title}
                 tags={question.tags}
                 author={question.author}
@@ -121,13 +125,13 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             ))
           ) : (
             <NoResult
-              title="Theres no question to show"
+              title="سوالی برای نمایش وجود ندارد"
               description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident
         quibusdam tempora veritatis id facere animi sequi ipsam adipisci, error
         repudiandae, repellendus debitis omnis ab iusto, explicabo quia quod
         quos. Corporis."
               link="/ask-question"
-              linkTitle="Ask A Question"
+              linkTitle="سوال بپرسید"
             />
           )}
         </div>

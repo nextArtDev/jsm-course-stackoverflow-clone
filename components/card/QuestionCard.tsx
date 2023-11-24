@@ -2,14 +2,14 @@ import Link from 'next/link'
 import { FC } from 'react'
 import RenderTag from '../shared/RenderTag'
 import Metric from '../shared/Metric'
-import { getTimestamp } from '@/lib/utils'
+import { formatLargeNumber, getTimestamp } from '@/lib/utils'
 import EditDeleteAction from '../shared/EditDeleteAction'
 
 interface QuestionCardProps {
-  _id: string
+  id: string
   title: string
-  tags: { _id: string; name: string }[]
-  // author: { _id: string; name: string; picture: string }
+  tags: { id: string; name: string }[]
+  // author: { id: string; name: string; picture: string }
   author: string
   upvotes: string[]
   views: number
@@ -19,7 +19,7 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
-  _id,
+  id,
   title,
   tags,
   author,
@@ -37,7 +37,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
           <span className="line-clamp-1 flex sm:hidden">
             {getTimestamp(new Date(createdAt))}
           </span>
-          <Link href={`/question/${_id}`}>
+          <Link href={`/question/${id}`}>
             <h3 className="line-clamp-1 flex-1 text-base sm:font-semibold ">
               {title}
             </h3>
@@ -47,11 +47,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
         {/* <SignedIn>
           {showActionButtons && <EditDeleteAction />}
         </SignedIn> */}
-        <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+        <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
       </div>
       <div className="mt-3.5 flex flex-wrap gap-2 ">
         {tags.map((tag) => (
-          <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
+          <RenderTag key={tag.id} id={tag.id} name={tag.name} />
         ))}
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
@@ -59,31 +59,33 @@ const QuestionCard: FC<QuestionCardProps> = ({
           imgUrl={author.picture}
           alt="User"
           value={author}
-          title={` - asked ${getTimestamp(new Date(createdAt))}`}
+          title={` - ${getTimestamp(new Date(createdAt))}`}
           textStyles="text-sm md:text-md"
-          href={`/profile/${author._id}`}
+          href={`/profile/${author.id}`}
           isAuthor
         />
         <div className="max-sm:flex-start flex items-center gap-3 max-sm:flex-wrap ">
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="Upvotes"
-            value={upvotes.length}
-            title="Votes"
+            // value={upvotes.length}
+            value={formatLargeNumber(upvotes)}
+            title="رای"
             textStyles="text-sm md:text-md"
           />
           <Metric
             imgUrl="/assets/icons/message.svg"
             alt="Message"
+            // value={answers.length}
             value={answers.length}
-            title="Answers"
+            title="جواب"
             textStyles="text-sm md:text-md"
           />
           <Metric
             imgUrl="/assets/icons/eye.svg"
             alt="Views"
             value={views}
-            title="Views"
+            title="مشاهده"
             textStyles="text-sm md:text-md"
           />
         </div>
