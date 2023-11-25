@@ -4,16 +4,32 @@ export const QuestionSchema = z.object({
   title: z
     .string()
     .min(5, {
-      message: 'title must be at least 5 characters.',
+      message: 'عنوان باید حداقل 5 حرف باشد.',
     })
     .max(130, {
-      message: 'title can not be longer than 130 characters',
+      message: 'عنوان نمی‌تواند بیش از 130 حرف باشد.',
     }),
   // explanation: z.string(),
-  explanation: z.string().min(10, {
-    message: 'You should explain your question at least in 100 character',
-  }),
-  tags: z.array(z.string().min(1).max(15)).min(1).max(3),
+  explanation: z
+    .string()
+    .min(20, {
+      message: 'شما باید سوال خود را حداقل در 10 حرف توضیح دهید.',
+    })
+    .max(1080, {
+      message: 'توضیحات نمی‌تواند بیش از 1080 حرف باشد.',
+    }),
+  tags: z
+    .array(
+      z
+        .string()
+        .min(3, {
+          message: 'تگ باید حداقل 3 حرف باشد.',
+        })
+        .max(15)
+    )
+    .max(15, {
+      message: 'تگ نمی‌تواند بیش از 130 حرف باشد.',
+    }),
 })
 
 export const AnswerSchema = z.object({
