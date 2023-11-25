@@ -21,6 +21,7 @@ import { Badge } from '../ui/badge'
 import Image from 'next/image'
 import { createQuestion, editQuestion } from '@/lib/actions/question.action'
 import { useRouter, usePathname } from 'next/navigation'
+import { Loader } from 'lucide-react'
 
 interface QuestionProps {
   mongoUserId: string
@@ -44,7 +45,7 @@ const Question: FC<QuestionProps> = ({
   const parsedQuestionDetails =
     questionDetails && JSON.parse(questionDetails || '')
 
-  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name)
+  const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name)
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
@@ -58,25 +59,26 @@ const Question: FC<QuestionProps> = ({
     setIsSubmitting(true)
 
     try {
-      if (type === 'Edit') {
-        await editQuestion({
-          questionId: parsedQuestionDetails._id,
-          title: values.title,
-          content: values.explanation,
-          path: pathname,
-        })
-        router.push(`/question/${parsedQuestionDetails._id}`)
-      } else {
-        await createQuestion({
-          title: values.title,
-          content: values.explanation,
-          tags: values.tags,
-          author: JSON.parse(mongoUserId),
-          path: pathname,
-        })
+      console.log(values)
+      //   if (type === 'Edit') {
+      //     await editQuestion({
+      //       questionId: parsedQuestionDetails.id,
+      //       title: values.title,
+      //       content: values.explanation,
+      //       path: pathname,
+      //     })
+      //     router.push(`/question/${parsedQuestionDetails.id}`)
+      //   } else {
+      //     await createQuestion({
+      //       title: values.title,
+      //       content: values.explanation,
+      //       tags: values.tags,
+      //       author: JSON.parse(mongoUserId),
+      //       path: pathname,
+      //     })
 
-        router.push('/')
-      }
+      //     router.push('/')
+      //   }
     } catch (error) {
       //
     } finally {
@@ -98,7 +100,7 @@ const Question: FC<QuestionProps> = ({
         if (tagValue.length > 15) {
           return form.setError('tags', {
             type: 'required',
-            message: 'Tag must be less than 15 characters.',
+            message: 'تگ باید کمتر از 15 حرف باشد.',
           })
         }
 
@@ -131,7 +133,7 @@ const Question: FC<QuestionProps> = ({
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
                 <FormLabel>
-                  Question Title <span className="text-rose-500">*</span>
+                  عنوان سوال <span className="text-rose-500">*</span>
                 </FormLabel>
                 <FormControl className="mt-3.5">
                   <Input
@@ -140,8 +142,9 @@ const Question: FC<QuestionProps> = ({
                   />
                 </FormControl>
                 <FormDescription className="mt-2.5">
-                  Be specific and imagine you&apos;re asking a question to
-                  another person.
+                  {/* Be specific and imagine you&apos;re asking a question to
+                  another person. */}
+                  سوالات خود را از دیگران بپرسید.
                 </FormDescription>
                 <FormMessage className="text-red-500" />
               </FormItem>
@@ -153,13 +156,15 @@ const Question: FC<QuestionProps> = ({
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-3 ">
                 <FormLabel>
-                  Detailed explanation of your problem{' '}
+                  جزئیات مشکل خودتان را بیان کنید.
+                  {/* Detailed explanation of your problem{' '} */}
                   <span className="text-rose-500">*</span>
                 </FormLabel>
 
-                <FormControl className="mt-3.5">
+                <FormControl className="mt-3.5 font-farsiSnapReg">
                   <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                    // @ts-ignore
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     onBlur={field.onBlur}
                     onEditorChange={(connect) => field.onChange(connect)}
@@ -190,14 +195,15 @@ const Question: FC<QuestionProps> = ({
                         'alignright alignjustify | bullist numlist outdent indent | ' +
                         'removeformat | help',
                       content_style:
-                        'body { font-family:Helvetica,Arial,sans-serif; font-size:16px ',
+                        'body { font-family:farsiSnapReg ,Helvetica,Arial,sans-serif; font-size:16px ',
                     }}
                   />
                 </FormControl>
 
                 <FormDescription className="mt-2.5">
-                  Introduce the problem and expand on what you put in the title.
-                  Minimum 20 characters.
+                  {/* Introduce the problem and expand on what you put in the title.
+                  Minimum 20 characters. */}
+                  مشکلتان را در حداقل 20 حرف توضیح دهید.
                 </FormDescription>
                 <FormMessage className="text-red-500" />
               </FormItem>
@@ -209,16 +215,16 @@ const Question: FC<QuestionProps> = ({
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
                 <FormLabel>
-                  Tags <span className="text-rose-500">*</span>
+                  تگ‌ها <span className="text-rose-500">*</span>
                 </FormLabel>
                 <FormControl className="mt-3.5">
                   <>
                     <Input
                       disabled={type === 'Edit'}
-                      className="min-h-[56px] border text-slate-700 "
+                      className="min-h-[56px] border text-slate-700 dark:text-inherit "
                       // {...field}
                       onKeyDown={(e) => handleInputKeyDown(e, field)}
-                      placeholder="Add tags..."
+                      placeholder="اضافه کردن تگ..."
                     />
                     {field.value.length > 0 && (
                       <div className="flex-start mt-2.5 gap-2.5">
@@ -249,8 +255,10 @@ const Question: FC<QuestionProps> = ({
                   </>
                 </FormControl>
                 <FormDescription className="mt-2.5">
-                  Add up to 3 tags to describe what your question is about. You
-                  need to press enter to add tag.
+                  {/* Add up to 3 tags to describe what your question is about. You
+                  need to press enter to add tag. */}
+                  با حداکثر سه تگ توضیح دهید سوال شما درباره چیست. (بعد از هر تگ
+                  اینتر بزنید)
                 </FormDescription>
                 <FormMessage className="text-red-500" />
               </FormItem>
@@ -259,13 +267,16 @@ const Question: FC<QuestionProps> = ({
 
           <Button
             disabled={isSubmitting}
-            className="w-fit bg-slate-300 text-slate-800 hover:text-slate-200"
+            className="metalize w-fit"
             type="submit"
           >
             {isSubmitting ? (
-              <>{type === 'Edit' ? 'Editing...' : 'Posting...'}</>
+              <>
+                {type === 'Edit' ? 'در حال ویرایش...' : 'در حال ارسال...'}
+                <Loader className="mr-2 h-4 w-4 animate-spin " />
+              </>
             ) : (
-              <>{type === 'Edit' ? 'Edit Question' : 'Ask a Question'}</>
+              <>{type === 'Edit' ? 'ویرایش سوال' : 'پرسیدن سوال'}</>
             )}
           </Button>
         </form>
