@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import Answer from '@/database/answer.model'
 import Interaction from '@/database/interaction.model'
 import { FilterQuery } from 'mongoose'
+import { prisma } from '../prisma'
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -70,11 +71,16 @@ export async function getQuestions(params: GetQuestionsParams) {
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { title, content, tags, author, path } = params
 
-    const question = await Question.create({
+    // const question = await Question.create({
+    //   title,
+    //   content,
+    //   author,
+    // })
+    const question = await prisma.question.create({
       title,
       content,
       author,
