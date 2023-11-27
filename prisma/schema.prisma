@@ -6,15 +6,16 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
+  // provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Image {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid())
 
-  url String @db.String
-  key String @db.String
+  url String
+  key String
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -26,125 +27,112 @@ enum Role {
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid())
 
   name             String
   // username         String?
   phone            String    @unique
   password         String
-  bio              String?   @db.String
-  picture          String?   @db.String
-  location         String?   @db.String
-  portfolioWebsite String?   @db.String
+  bio              String?
+  picture          String?
+  location         String?
+  portfolioWebsite String?
   reputation       Int       @default(0)
   // role             Role      @default(USER)
   isVerified       Boolean   @default(false)
   verificationCode Int?
   verificationDate DateTime?
 
-  saved Question[] @relation(fields: [savedQuestions], references: [id])
-  // savedQuestionId String     @db.ObjectId
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Answer Answer[]
-  // Tag         Tag[]
-  // Interaction Interaction[]
+  saved              Question[] @relation("UserWhoSaved")
+  upvotedQuestions   Question[] @relation("UpvotedQuestions")
+  downvotedQuestions Question[] @relation("DownvotedQuestions")
+  authoredQuestions  Question[] @relation("QuestionAuthor")
 
-  upvoteQuestions   Question[] @relation(fields: [QuestionUpvotes], references: [id])
-  downvoteQuestions Question[] @relation(fields: [QuestionDownvotes], references: [id])
-  questions         Question[] @relation(fields: [questionAuthor], references: [id])
-
-  upvoteAnswers   Answer[] @relation(fields: [AnswerUpvotes], references: [id])
-  downvoteAnswers Answer[] @relation(fields: [AnswerDownvotes], references: [id])
-  answers         Answer[] @relation(fields: [answerAuthor], references: [id])
+  upvotedAnswers   Answer[]      @relation("UpvotedAnswers")
+  downvotedAnswers Answer[]      @relation("DownvotedAnswers")
+  authoredAnswers  Answer[]      @relation("AnswerAuthor")
+  Tag              Tag?          @relation(fields: [tagId], references: [id])
+  tagId            Int?
+  Interaction      Interaction[]
 }
 
 model Question {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid())
 
   title   String
-  content String @db.String
-  views   Int
+  content String
+  views   Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  upvotes User[] @relation(fields: [upvoteQuestions], references: [id])
-  // upvoteUserId String @db.ObjectId
+  upvoters   User[] @relation("UpvotedQuestions")
+  downvoters User[] @relation("DownvotedQuestions")
 
-  downvotes User[] @relation(fields: [downvoteQuestions], references: [id])
-  // downvoteUserId String @db.ObjectId
-
-  QuestionAuthor User? @relation(fields: [questions], references: [id])
-  // userId         String? @db.ObjectId
-
-  User User? @relation(fields: [savedQuestions], references: [id])
+  author   User   @relation("QuestionAuthor", fields: [authorId], references: [id])
+  authorId String
 
   answers Answer[]
 
-  // tags Tag[]
-  // Interaction Interaction[]
+  tags Tag[]
+
+  usersWhoSaved User?         @relation("UserWhoSaved", fields: [userId], references: [id])
+  userId        String?
+  Interaction   Interaction[]
 }
 
+// https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#mongodb
 model Answer {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id Int @id @default(autoincrement())
 
-  content String @db.String
+  content String
 
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId String   @db.ObjectId
+  upvoters   User[]   @relation("UpvotedAnswers")
+  downvoters User[]   @relation("DownvotedAnswers")
+  author     User     @relation("AnswerAuthor", fields: [authorId], references: [id])
+  authorId   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  upvotes        User[] @relation(fields: [AnswerUpvotes], references: [id], fields: [upvoteUserId])
-  downvotes      User[] @relation(fields: [AnswerDownvotes], references: [id], fields: [downvoteUserId])
-  upvoteUserId   String @db.ObjectId
-  downvoteUserId String @db.ObjectId
+  Question    Question      @relation(fields: [questionId], references: [id])
+  questionId  String
+  Interaction Interaction[]
+}
 
-  AnswerAuthor   User?   @relation(fields: [answerAuthor], references: [id], fields: [answerAuthorId])
-  answerAuthorId String? @db.ObjectId
+model Tag {
+  id Int @id @default(autoincrement())
 
-  // Interaction Interaction[]
+  name        String
+  description String
+
+  questions Question[]
+
+  followers User[]
+
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  Interaction   Interaction? @relation(fields: [interactionId], references: [id])
+  interactionId Int?
+}
+
+model Interaction {
+  id   Int  @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+
+  question Question @relation(fields: [questionId], references: [id])
+  answer   Answer   @relation(fields: [answerId], references: [id])
+
+  action String
+
+  tags Tag[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  userId     String
+  questionId String
+  answerId   Int
 }
-
-// model Tag {
-//   id String @id @default(auto()) @map("_id") @db.ObjectId
-
-//   name        String @db.String
-//   description String @db.String
-
-//   questions Question[]
-
-//   followers User[]
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-
-//   Interaction   Interaction? @relation(fields: [interactionId], references: [id])
-//   interactionId String?      @db.ObjectId
-// }
-
-// model Interaction {
-//   id String @id @default(auto()) @map("_id") @db.ObjectId
-
-//   InteractionUser User? @relation("interactionUser", references: [id], fields: [userId])
-
-//   action String
-
-//   question Question @relation(fields: [questionId], references: [id])
-//   answer   Answer   @relation(fields: [answerId], references: [id])
-//   tags     Tag[]
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-//   userId     String?  @db.ObjectId
-//   questionId String   @db.ObjectId
-//   answerId   String   @db.ObjectId
-//   User       User?    @relation(fields: [userId], references: [id])
-// }

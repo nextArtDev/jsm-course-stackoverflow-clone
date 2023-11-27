@@ -69,15 +69,15 @@ const Question: FC<QuestionProps> = ({
       //     })
       //     router.push(`/question/${parsedQuestionDetails.id}`)
       //   } else {
-      //     await createQuestion({
-      //       title: values.title,
-      //       content: values.explanation,
-      //       tags: values.tags,
-      //       author: JSON.parse(mongoUserId),
-      //       path: pathname,
-      //     })
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname,
+      })
 
-      //     router.push('/')
+      router.push('/')
       //   }
     } catch (error) {
       //

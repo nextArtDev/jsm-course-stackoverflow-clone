@@ -59,26 +59,26 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   const userId = currentUser?.id
 
   let result
-  if (searchParams?.filter === 'recommended') {
-    if (!userId) {
-      result = await getRecommendedQuestions({
-        userId,
-        searchQuery: searchParams.q,
-        page: searchParams.page ? +searchParams.page : 1,
-      })
-    } else {
-      result = {
-        questions: [],
-        isNext: false,
-      }
-    }
-  } else {
-    result = await getQuestions({
-      searchQuery: searchParams.q,
-      filter: searchParams.filter,
-      page: searchParams.page ? +searchParams.page : 1,
-    })
-  }
+  // if (searchParams?.filter === 'recommended') {
+  //   if (!userId) {
+  //     result = await getRecommendedQuestions({
+  //       userId,
+  //       searchQuery: searchParams.q,
+  //       page: searchParams.page ? +searchParams.page : 1,
+  //     })
+  //   } else {
+  //     result = {
+  //       questions: [],
+  //       isNext: false,
+  //     }
+  //   }
+  // } else {
+  //   result = await getQuestions({
+  //     searchQuery: searchParams.q,
+  //     filter: searchParams.filter,
+  //     page: searchParams.page ? +searchParams.page : 1,
+  //   })
+  // }
 
   // console.log(result.question)
 
@@ -136,12 +136,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           )}
         </div>
       </div>
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
           isNext={result.isNext}
         />
-      </div>
+      </div> */}
     </>
   )
 }
