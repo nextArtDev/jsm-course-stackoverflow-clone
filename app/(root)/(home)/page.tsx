@@ -59,28 +59,28 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   const userId = currentUser?.id
 
   let result
-  // if (searchParams?.filter === 'recommended') {
-  //   if (!userId) {
-  //     result = await getRecommendedQuestions({
-  //       userId,
-  //       searchQuery: searchParams.q,
-  //       page: searchParams.page ? +searchParams.page : 1,
-  //     })
-  //   } else {
-  //     result = {
-  //       questions: [],
-  //       isNext: false,
-  //     }
-  //   }
-  // } else {
-  //   result = await getQuestions({
-  //     searchQuery: searchParams.q,
-  //     filter: searchParams.filter,
-  //     page: searchParams.page ? +searchParams.page : 1,
-  //   })
-  // }
+  if (searchParams?.filter === 'پیشنهادی') {
+    if (!userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      })
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      }
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    })
+  }
 
-  // console.log(result.question)
+  // console.log(result.questions)
 
   return (
     <>
@@ -109,8 +109,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         <HomeFilters />
 
         <div className="mt-10 flex w-full flex-col gap-6">
-          {questions?.length ? (
-            questions.map((question) => (
+          {result.questions?.length ? (
+            result.questions.map((question) => (
               <QuestionCard
                 key={question.id}
                 id={question.id}
@@ -120,7 +120,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
                 upvotes={question.upvotes}
                 views={question.views}
                 answers={question.answers}
-                createdAt={question.createdAt}
+                createdAt={question.created_at}
               />
             ))
           ) : (

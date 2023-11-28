@@ -24,18 +24,14 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Loader } from 'lucide-react'
 
 interface QuestionProps {
-  mongoUserId: string
+  userId: string
   type?: string
   questionDetails?: string
 }
 
 // const type: any = 'create'
 
-const Question: FC<QuestionProps> = ({
-  mongoUserId,
-  type,
-  questionDetails,
-}) => {
+const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
   // to extract the value later
   const router = useRouter()
   const pathname = usePathname()
@@ -73,7 +69,7 @@ const Question: FC<QuestionProps> = ({
         title: values.title,
         content: values.explanation,
         tags: values.tags,
-        author: JSON.parse(mongoUserId),
+        authorId: JSON.parse(userId),
         path: pathname,
       })
 
@@ -84,6 +80,7 @@ const Question: FC<QuestionProps> = ({
     } finally {
       //
     }
+    setIsSubmitting(false)
     form.reset()
   }
   const handleInputKeyDown = (
