@@ -17,15 +17,19 @@ import Question from '@/database/question.model'
 import Answer from '@/database/answer.model'
 import { BadgeCriteriaType } from '@/types'
 import { assignBadges } from '../utils'
+import { prisma } from '../prisma'
 
 export async function getUserByID(params: any) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId } = params
 
-    const user = await User.findOne({ userId })
+    // const user = await User.findOne({ userId })
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    })
     return user
   } catch (error) {
     console.log(error)

@@ -20,61 +20,105 @@ import { FilterQuery } from 'mongoose'
 import { prisma } from '../prisma'
 import { getCurrentUser } from './getCurrentUser'
 
-// export async function getQuestions(params: GetQuestionsParams) {
-//   try {
-//     connectToDatabase()
-//     const { searchQuery, filter, page = 1, pageSize = 10 } = params
+export async function getQuestions(params: GetQuestionsParams) {
+  try {
+    // connectToDatabase()
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params
 
-//     const skipAmount = (page - 1) * pageSize
+    const skipAmount = (page - 1) * pageSize
+    const query: any = {} // This will be used to build the Prisma query
 
-//     const query: FilterQuery<typeof Question> = {}
+    if (searchQuery) {
+      query.OR = [
+        { title: { contains: searchQuery } },
+        { content: { contains: searchQuery } },
+      ]
+    }
 
-//     if (searchQuery) {
-//       query.$or = [
-//         { title: { $regex: new RegExp(searchQuery, 'i') } },
-//         { content: { $regex: new RegExp(searchQuery, 'i') } },
-//       ]
-//     }
+    let orderByOptions: any = {} // This will be used to define the sorting options
 
-//     let sortOptions = {}
+    switch (filter) {
+      case 'جدیدترین':
+        orderByOptions = { createdAt: 'desc' }
+        break
+      case 'پرتکرار':
+        orderByOptions = { views: 'desc' }
+        break
+      case 'بدون جواب':
+        query.answers = { none: {} } // Check for questions with no answers
+        break
+      default:
+        break
+    }
 
-//     switch (filter) {
-//       case 'newest':
-//         sortOptions = { createdAt: -1 }
-//         break
-//       case 'frequent':
-//         sortOptions = { views: -1 }
-//         break
-//       case 'unanswered':
-//         query.answers = { $size: 0 }
-//         break
+    // Fetch questions using Prisma
+    const questions = await prisma.question.findMany({
+      where: query,
+      include: {
+        tags: true, // Include the related tags
+        author: true, // Include the related author
+        answers: true,
+      },
+      skip: skipAmount,
+      take: pageSize,
+      orderBy: orderByOptions,
+    })
+    // console.log(questions)
 
-//       default:
-//         break
-//     }
-//     const question = await Question.find(query)
-//       .populate({ path: 'tags', model: Tag })
-//       .populate({ path: 'author', model: User })
-//       .skip(skipAmount)
-//       .limit(pageSize)
-//       .sort(sortOptions)
+    // Fetch the total count of questions for pagination
+    const totalQuestions = await prisma.question.count({ where: query })
 
-//     const totalQuestions = await Question.countDocuments(query)
+    // Calculate if there are more questions to be fetched
+    const isNext = totalQuestions > skipAmount + questions.length
 
-//     const isNext = totalQuestions > skipAmount + question.length
+    // const query: FilterQuery<typeof Question> = {}
 
-//     return { question, isNext }
-//   } catch (error) {
-//     console.log(error)
-//     throw error
-//   }
-// }
+    // if (searchQuery) {
+    //   query.$or = [
+    //     { title: { $regex: new RegExp(searchQuery, 'i') } },
+    //     { content: { $regex: new RegExp(searchQuery, 'i') } },
+    //   ]
+    // }
+
+    // let sortOptions = {}
+
+    // switch (filter) {
+    //   case 'newest':
+    //     sortOptions = { createdAt: -1 }
+    //     break
+    //   case 'frequent':
+    //     sortOptions = { views: -1 }
+    //     break
+    //   case 'unanswered':
+    //     query.answers = { $size: 0 }
+    //     break
+
+    //   default:
+    //     break
+    // }
+    // const question = await Question.find(query)
+    //   .populate({ path: 'tags', model: Tag })
+    //   .populate({ path: 'author', model: User })
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
+    //   .sort(sortOptions)
+
+    // const totalQuestions = await Question.countDocuments(query)
+
+    // const isNext = totalQuestions > skipAmount + question.length
+
+    return { questions, isNext }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
     // connectToDatabase()
     const currentUser = await getCurrentUser()
-    const { title, content, tags, author, path } = params
+    const { title, content, tags, authorId, path } = params
     if (!currentUser) return
 
     // const question = await Question.create({
@@ -86,11 +130,54 @@ export async function createQuestion(params: CreateQuestionParams) {
       data: {
         title,
         content,
-        authorId: currentUser.id,
+        authorId,
       },
     })
 
     const tagDocuments = []
+
+    for (const tag of tags) {
+      const existingTag = await prisma.tag.findUnique({
+        where: {
+          name: tag,
+        },
+      })
+
+      if (existingTag) {
+        tagDocuments.push(existingTag.id)
+      } else {
+        const newTag = await prisma.tag.create({
+          data: {
+            name: tag,
+            questions: { connect: { id: question.id } },
+            // followers: { connect: { id: authorId } },
+          },
+        })
+        tagDocuments.push(newTag.id)
+      }
+    }
+
+    // Connect tags to the question
+    await prisma.question.update({
+      where: { id: question.id },
+      data: { tags: { connect: tagDocuments.map((id) => ({ id })) } },
+    })
+
+    // Create an interaction record
+    // const interaction = await prisma.interaction.create({
+    //   data: {
+    //     user: { connect: { id: authorId } },
+    //     action: 'ask_question',
+    //     question: { connect: { id: question.id } },
+    //     tags: { connect: tagDocuments.map((id) => ({ id })) },
+    //   },
+    // })
+    // console.log(interaction)
+    // // Increment author's reputation by +5 for creating a question
+    // await prisma.user.update({
+    //   where: { id: authorId },
+    //   data: { reputation: { increment: 5 } },
+    // })
 
     // Create the tags or get them if they already exist
 

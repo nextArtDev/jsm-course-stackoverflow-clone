@@ -29,7 +29,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
   createdAt,
   userId,
 }) => {
-  // const showActionButtons = userId && userId === author.userId
+  const showActionButtons = userId && userId === author.userId
   return (
     <section className="rounded-[10px] p-9 text-slate-300 sm:px-11 ">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -55,7 +55,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
         ))}
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        <Metric
+        {/* <Metric
           imgUrl={author.picture}
           alt="User"
           value={author}
@@ -63,13 +63,13 @@ const QuestionCard: FC<QuestionCardProps> = ({
           textStyles="text-sm md:text-md"
           href={`/profile/${author.id}`}
           isAuthor
-        />
+        /> */}
         <div className="max-sm:flex-start flex items-center gap-3 max-sm:flex-wrap ">
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="Upvotes"
-            // value={upvotes.length}
-            value={formatLargeNumber(upvotes)}
+            value={upvotes}
+            // value={formatLargeNumber(upvotes)}
             title="رای"
             textStyles="text-sm md:text-md"
           />

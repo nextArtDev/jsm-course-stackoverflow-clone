@@ -12,7 +12,8 @@ export interface CreateQuestionsParams {
   title: string
   content: string
   tags: string[]
-  author: Schema.Types.ObjectId | IUser
+  authorId: string
+  // author: Schema.Types.ObjectId | IUser
   path: string
 }
 
@@ -72,7 +73,8 @@ export interface CreateQuestionParams {
   title: string
   content: string
   tags: string[]
-  author: Schema.Types.ObjectId | IUser
+  // author: Schema.Types.ObjectId | IUser
+  authorId: string
   path: string
 }
 export interface GetQuestionByIdParams {
