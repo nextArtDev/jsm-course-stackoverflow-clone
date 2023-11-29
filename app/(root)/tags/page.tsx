@@ -2,10 +2,11 @@ import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import Filter from '@/components/shared/search/Filter'
 import LocalSearchbar from '@/components/shared/search/LocalSearchbar'
-import { TagFilters, UserFilters } from '@/constants'
+import { TagFilters } from '@/constants'
 import { getAllTags } from '@/lib/actions/tag.actions'
 import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
+import SearchImage from 'public/assets/icons/search.svg'
 
 async function page({ searchParams }: SearchParamsProps) {
   const result = await getAllTags({
@@ -13,17 +14,17 @@ async function page({ searchParams }: SearchParamsProps) {
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
   })
-
+  // console.log(result.tags)
   return (
     <div className="text-slate-200">
-      <h1 className="font-bold text-gray-100"> All Tags</h1>
+      <h1 className="font-bold text-gray-100"> همه تگ‌ها</h1>
 
       <div className="mt-11 flex flex-col justify-between gap-5 max-sm:flex-col sm:items-center ">
         <LocalSearchbar
           route="/tags"
           iconPosition="left"
-          imgSrc="/assets/icons/search.svg"
-          placeholder="Search for tags"
+          imgSrc={SearchImage}
+          placeholder="جست‌وجوی تگها"
           otherClasses="flex-1"
         />
         <Filter
@@ -35,24 +36,24 @@ async function page({ searchParams }: SearchParamsProps) {
       <section className="mt-12 flex flex-wrap gap-4">
         {result.tags.length > 0 ? (
           result.tags.map((tag) => (
-            <Link href={`/tags/${tag._id}`} key={tag._id} className="">
-              <article className="flex w-full flex-col rounded-2xl border px-8 py-10 sm:w-[260px]">
-                <div className="w-fit rounded-sm px-5 py-1.5">
-                  <p className="text-slate-500 font-semibold ">{tag.name}</p>
+            <Link href={`/tags/${tag.id}`} key={tag.id} className=" ">
+              <article className="flex w-full flex-col items-center justify-center rounded-2xl border bg-slate-600 px-8 py-10 sm:w-[260px]">
+                <div className="w-fit rounded-sm bg-slate-200 px-5 py-1.5">
+                  <p className="font-semibold text-slate-700 ">{tag.name}</p>
                 </div>
-                <p className="mt-3.5">
-                  <span className="mr-2.5 font-semibold ">
-                    {tag.questions.length}
-                  </span>{' '}
-                  Questions
+                <p className="mt-3.5 text-slate-400 ">
+                  <span className="ml-1.5 font-semibold ">
+                    {tag.questions.length}+
+                  </span>
+                  سوال
                 </p>
               </article>
             </Link>
           ))
         ) : (
           <NoResult
-            title="No Tags Found"
-            description="Its looks like there are no tags found."
+            title="تگی پیدا نشد"
+            description="بنظر می‌رسد تگی وجود ندارد."
             link="/ask-question"
             linkTitle="Ask a question"
           />

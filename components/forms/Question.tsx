@@ -77,10 +77,11 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
       //   }
     } catch (error) {
       //
+      console.log(error)
     } finally {
       //
+      setIsSubmitting(false)
     }
-    setIsSubmitting(false)
     form.reset()
   }
   const handleInputKeyDown = (

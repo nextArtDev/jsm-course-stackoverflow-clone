@@ -110,7 +110,7 @@ export interface GetQuestionsByTagIdParams {
   searchQuery?: string
 }
 export interface GetTopInteractedTagsParams {
-  userId: string
+  phone: string
   limit?: number
 }
 export interface CreateUserParams {

@@ -45,7 +45,12 @@ export async function getQuestions(params: GetQuestionsParams) {
         orderByOptions = { views: 'desc' }
         break
       case 'بدون جواب':
-        query.answers = { none: {} } // Check for questions with no answers
+        orderByOptions = {
+          answers: {
+            _count: 'desc',
+          },
+        }
+
         break
       default:
         break
