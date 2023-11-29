@@ -77,13 +77,13 @@ export const AnswerFilters = [
   { name: 'Oldest', value: 'old' },
 ]
 export const UserFilters = [
-  { name: 'New Users', value: 'new_users' },
+  { name: 'کاربر جدید', value: 'new_users' },
   {
-    name: 'Old Users',
+    name: 'کاربر قدیمی',
     value: 'old_users',
   },
   {
-    name: 'Top Contributors',
+    name: 'بیشترین مشارکت',
     value: 'top_contributors',
   },
 ]
@@ -111,19 +111,19 @@ export const QuestionFilters = [
 ]
 export const TagFilters = [
   {
-    name: 'Popular',
+    name: 'محبوب',
     value: 'popular',
   },
   {
-    name: 'Recent',
+    name: 'اخیر',
     value: 'recent',
   },
   {
-    name: 'Name',
+    name: 'نام',
     value: 'name',
   },
   {
-    name: 'Old',
+    name: 'قدیمی‌تر',
     value: 'old',
   },
 ]

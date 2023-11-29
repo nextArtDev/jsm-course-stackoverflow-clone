@@ -56,7 +56,8 @@ const QuestionCard: FC<QuestionCardProps> = ({
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         {/* <Metric
-          imgUrl={author.picture}
+          // imgUrl={author.picture}
+          imgUrl="/assets/icons/user.svg"
           alt="User"
           value={author}
           title={` - ${getTimestamp(new Date(createdAt))}`}

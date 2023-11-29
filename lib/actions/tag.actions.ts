@@ -10,14 +10,16 @@ import {
 import Tag, { ITag } from '@/database/tag.model'
 import Question from '@/database/question.model'
 import { FilterQuery } from 'mongoose'
+import { prisma } from '../prisma'
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
-    const { userId, limit = 3 } = params
+    const { phone, limit = 3 } = params
 
-    const user = await User.findById(userId)
+    // const user = await User.findById(userId)
+    const user = await prisma.user.findUnique({ where: { phone } })
 
     if (!user) throw new Error('User not found')
 
@@ -25,9 +27,9 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     // Interaction
 
     return [
-      { _id: 1, name: 'tag1' },
-      { _id: 2, name: 'tag2' },
-      { _id: 3, name: 'tag3' },
+      { id: 1, name: 'سوال' },
+      { id: 2, name: 'جواب' },
+      { id: 3, name: 'تگ سوم' },
     ]
   } catch (error) {
     console.log(error)
@@ -44,38 +46,73 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     const skipAmount = (page - 1) * pageSize
 
-    const query: FilterQuery<typeof Tag> = {}
+    // const query: FilterQuery<typeof Tag> = {}
+    const query: any = {}
 
+    // if (searchQuery) {
+    //   query.$or = [{ name: { $regex: new RegExp(searchQuery, 'i') } }]
+    // }
     if (searchQuery) {
-      query.$or = [{ name: { $regex: new RegExp(searchQuery, 'i') } }]
+      query.OR = [{ name: { contains: searchQuery } }]
     }
-
     let sortOptions = {}
 
+    // switch (filter) {
+    //   case 'popular':
+    //     sortOptions = { questions: -1 }
+    //     break
+    //   case 'recent':
+    //     sortOptions = { createdAt: 1 }
+    //     break
+    //   case 'name':
+    //     sortOptions = { name: 1 }
+    //     break
+    //   case 'old':
+    //     sortOptions = { createdAt: 1 }
+    //     break
+
+    //   default:
+    //     break
+    // }
     switch (filter) {
       case 'popular':
-        sortOptions = { questions: -1 }
+        sortOptions = {
+          questions: {
+            _count: 'desc',
+          },
+        }
         break
       case 'recent':
-        sortOptions = { createdAt: 1 }
+        sortOptions = { created_at: 'desc' }
         break
       case 'name':
-        sortOptions = { name: 1 }
+        sortOptions = { name: 'asc' }
         break
       case 'old':
-        sortOptions = { createdAt: 1 }
+        sortOptions = { created_at: 'asc' }
         break
 
       default:
         break
     }
 
-    const tags = await Tag.find(query)
-      .skip(skipAmount)
-      .limit(pageSize + 1)
-      .sort(sortOptions)
+    // const tags = await Tag.find(query)
+    //   .skip(skipAmount)
+    //   .limit(pageSize + 1)
+    //   .sort(sortOptions)
 
-    const totalTags = await Tag.countDocuments(query)
+    const tags = await prisma.tag.findMany({
+      where: query,
+      include: {
+        questions: true,
+      },
+      skip: skipAmount,
+      take: pageSize,
+      orderBy: sortOptions,
+    })
+
+    // const totalTags = await Tag.countDocuments(query)
+    const totalTags = await prisma.tag.count({ where: query })
 
     const isNext = totalTags > skipAmount + tags.length
     return { tags, isNext }

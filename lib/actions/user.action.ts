@@ -39,7 +39,7 @@ export async function getUserByID(params: any) {
 }
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { page = 1, pageSize = 20, filter, searchQuery } = params
     const skipAmount = (page - 1) * pageSize
@@ -48,13 +48,13 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     switch (filter) {
       case 'new_users':
-        sortOptions = { joinedAt: -1 }
+        sortOptions = { createdAt: 'desc' }
         break
       case 'old_users':
-        sortOptions = { joinedAt: 1 }
+        sortOptions = { createdAt: 'asc' }
         break
       case 'top_contributors':
-        sortOptions = { reputation: -1 }
+        sortOptions = { reputation: 'desc' }
         break
       // case 'recommended':
       //   break
@@ -63,21 +63,36 @@ export async function getAllUsers(params: GetAllUsersParams) {
         break
     }
 
-    const query: FilterQuery<typeof User> = {}
+    // const query: FilterQuery<typeof User> = {}
+    const query: any = {}
 
+    // if (searchQuery) {
+    //   query.$or = [
+    //     { title: { $regex: new RegExp(searchQuery, 'i') } },
+    //     { username: { $regex: new RegExp(searchQuery, 'i') } },
+    //   ]
+    // }
     if (searchQuery) {
-      query.$or = [
-        { title: { $regex: new RegExp(searchQuery, 'i') } },
-        { username: { $regex: new RegExp(searchQuery, 'i') } },
+      query.OR = [
+        { name: { contains: searchQuery } },
+        { phone: { contains: searchQuery } },
       ]
     }
+    // const users = await User.find(query)
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
+    //   .sort(sortOptions)
 
-    const users = await User.find(query)
-      .skip(skipAmount)
-      .limit(pageSize)
-      .sort(sortOptions)
+    const users = await prisma.user.findMany({
+      where: query,
+      skip: skipAmount,
+      take: pageSize,
+      orderBy: sortOptions,
+    })
 
-    const totalUsers = await Question.countDocuments(query)
+    // const totalUsers = await Question.countDocuments(query)
+
+    const totalUsers = await prisma.user.count({ where: query })
 
     const isNext = totalUsers > skipAmount + users.length
 
