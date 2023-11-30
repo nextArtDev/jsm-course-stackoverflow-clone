@@ -217,25 +217,46 @@ export async function createQuestion(params: CreateQuestionParams) {
   }
 }
 
-// export async function getQuestionById(params: GetQuestionByIdParams) {
-//   try {
-//     await connectToDatabase()
+export async function getQuestionById(params: GetQuestionByIdParams) {
+  try {
+    // await connectToDatabase()
 
-//     const { questionId } = params
-//     const question = await Question.findById(questionId)
-//       .populate({ path: 'tags', model: Tag, select: 'id name' })
-//       .populate({
-//         path: 'author',
-//         model: User,
-//         select: 'id userId name picture',
-//       })
+    const { questionId } = params
+    // const question = await Question.findById(questionId)
+    //   .populate({ path: 'tags', model: Tag, select: 'id name' })
+    //   .populate({
+    //     path: 'author',
+    //     model: User,
+    //     select: 'id userId name picture',
+    //   })
 
-//     return question
-//   } catch (error) {
-//     console.log(error)
-//     throw error
-//   }
-// }
+    const question = await prisma.question.findFirst({
+      where: { id: questionId },
+      include: {
+        tags: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        answers: true,
+        upvoters: true,
+        downvoters: true,
+      },
+    })
+    return { question }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 // export async function upvoteQuestion(params: QuestionVoteParams) {
 //   try {

@@ -71,10 +71,10 @@ export const BADGE_CRITERIA = {
 }
 
 export const AnswerFilters = [
-  { name: 'Highest Upvotes', value: 'highestUpvotes' },
-  { name: 'Lowest Upvotes', value: 'lowestUpvotes' },
-  { name: 'Most Recent', value: 'recent' },
-  { name: 'Oldest', value: 'old' },
+  { name: 'بیشترین لایک', value: 'highestUpvotes' },
+  { name: 'کمترین لایک', value: 'lowestUpvotes' },
+  { name: 'جدیدترین', value: 'recent' },
+  { name: 'قدیمی‌ترین', value: 'old' },
 ]
 export const UserFilters = [
   { name: 'کاربر جدید', value: 'new_users' },

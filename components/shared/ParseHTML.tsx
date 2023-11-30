@@ -1,5 +1,5 @@
 'use client'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import Prism from 'prismjs'
 import parse from 'html-react-parser'
 import 'prismjs/components/prism-python'
@@ -30,7 +30,14 @@ interface ParseHTMLProps {
 }
 
 const ParseHTML: FC<ParseHTMLProps> = ({ data }) => {
-  return <div className="w-full min-w-full">{parse(data)}</div>
+  useEffect(() => {
+    Prism.highlightAll()
+  }, [])
+  return (
+    <div dir="ltr" className="w-full min-w-full">
+      {parse(data)}
+    </div>
+  )
 }
 
 export default ParseHTML

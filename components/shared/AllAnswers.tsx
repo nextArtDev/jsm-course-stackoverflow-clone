@@ -8,7 +8,7 @@ import { getTimestamp } from '@/lib/utils'
 import ParseHTML from './ParseHTML'
 import Votes from './Votes'
 import Pagination from './Pagination'
-
+import userImage from '@/public/assets/icons/user.svg'
 interface AllAnswersProps {
   questionId: string
   userId: string
@@ -32,20 +32,20 @@ const AllAnswers: FC<AllAnswersProps> = async ({
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between">
-        <h3 className="text-base">{totalAnswers} Answers</h3>
+        <h3 className="text-base">{totalAnswers} جواب</h3>
         <Filter filters={AnswerFilters} />
       </div>
 
       <div>
         {result.answers.map((answer) => (
-          <article key={answer._id} className="border-b py-10">
+          <article key={answer.id} className="border-b py-10">
             <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
               <Link
-                href={`/profile/${answer.author.userId}`}
+                href={`/profile/${answer.author.id}`}
                 className="flex flex-1 items-start gap-1 sm:items-center"
               >
                 <Image
-                  src={answer.author.picture}
+                  src={answer.author.picture ?? userImage}
                   alt="profile"
                   width={18}
                   height={18}
@@ -53,25 +53,27 @@ const AllAnswers: FC<AllAnswersProps> = async ({
                 />
                 <div className="flex flex-col sm:flex-row sm:items-center ">
                   <p className="font-semibold">{answer.author.name}</p>
-                  <p className="ml-0.5 mt-0.5 line-clamp-1">
-                    <span className="max-sm:hidden"> - </span> answered{' '}
-                    {getTimestamp(answer.createdAt)}
+                  <p className="mr-0.5 mt-0.5 line-clamp-1">
+                    <span className="max-sm:hidden"> - </span>
+                    {getTimestamp(answer.created_at)}
                   </p>
                 </div>
               </Link>
               <div className="flex justify-end">
                 <Votes
                   type="Answer"
-                  itemId={JSON.stringify(answer._id)}
+                  itemId={JSON.stringify(answer.id)}
                   userId={JSON.stringify(userId)}
-                  upvotes={answer.upvotes.length}
-                  hasupVoted={answer.upvotes.includes(userId)}
-                  downvotes={answer.downvotes.length}
-                  hasdownVoted={answer.downvotes.includes(userId)}
+                  upvotes={answer.upvoters.length}
+                  hasupVoted={answer.upvoters.includes(userId)}
+                  downvotes={answer.downvoters.length}
+                  hasdownVoted={answer.downvoters.includes(userId)}
                 />
               </div>
             </div>
-            <ParseHTML data={answer.content} />
+            <div className=" text-right ">
+              <ParseHTML data={answer.content} />
+            </div>
           </article>
         ))}
       </div>
