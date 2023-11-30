@@ -9,7 +9,8 @@ import { Editor } from '@tinymce/tinymce-react'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 import { createAnswer } from '@/lib/actions/answer.actions'
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname, useRouter } from 'next/navigation'
+import { useTheme } from '@/context/ThemeProvider'
 
 interface AnswerProps {
   question: string
@@ -18,7 +19,9 @@ interface AnswerProps {
 }
 
 const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
+  const { mode } = useTheme()
   const pathname = usePathname()
+  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const editorRef = useRef(null)
 
@@ -46,6 +49,7 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
 
         editor.setContent('')
       }
+      router.push('/')
     } catch (error) {
       console.log(error)
     } finally {
@@ -53,13 +57,15 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
     }
   }
   return (
-    <div>
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
-        <h4 className="font-semibold">Write Your Answer Here</h4>
+    <div className="py-4">
+      <div className="flex flex-col justify-between gap-5 py-4 sm:flex-row sm:items-center sm:gap-2">
+        <h4 className="mx-auto py-4 text-2xl font-semibold">
+          جواب خود را اینجا بنویسید:
+        </h4>
       </div>
       <Button
         variant={'outline'}
-        className="gap-1.5 rounded-md px-4 py-2.5 text-slate-500 shadow-none "
+        className=" metalize gap-1.5 rounded-md bg-slate-500 px-4 py-2.5 text-slate-100 shadow-none "
         onClick={() => {}}
       >
         <Image
@@ -69,7 +75,7 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
           height={12}
           className="object-contain"
         />
-        Generate an AI Answer
+        تولید جواب با هوش مصنوعی
       </Button>
       <Form {...form}>
         <form
@@ -84,6 +90,7 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
                 <FormControl className="mt-3.5">
                   <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                    // @ts-ignore
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     onBlur={field.onBlur}
                     onEditorChange={(connect) => field.onChange(connect)}
@@ -114,8 +121,8 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
                         'removeformat | help',
                       content_style:
                         'body { font-family:Helvetica,Arial,sans-serif; font-size:16px ',
-                      skin: 'oxide-dark',
-                      //   content_css:'dark',
+                      skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                      content_css: mode === 'dark' ? 'dark' : 'light',
                     }}
                   />
                 </FormControl>
@@ -124,9 +131,13 @@ const Answer: FC<AnswerProps> = ({ question, questionId, authorId }) => {
               </FormItem>
             )}
           />
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isSubmitting} className="w-fit">
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+          <div className="flex justify-start">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="metalize w-fit "
+            >
+              {isSubmitting ? 'در حال ارسال...' : 'ارسال'}
             </Button>
           </div>
         </form>

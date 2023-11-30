@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
-import '../styles/prism.css'
+import '../styles/prism1.css'
 // import { ClerkProvider } from '@clerk/nextjs'
 import React from 'react'
 import { ThemeProvider } from '@/context/ThemeProvider'
@@ -26,11 +26,7 @@ const numericRegularFont = localFont({
   src: '../public/fonts/FarsiAdad-Regular.woff2',
   variable: '--font-adad-reg',
 })
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-spaceGrotesk',
-})
+
 const primaryFont = localFont({
   src: '../public/fonts/FarsiFont.woff2',
   variable: '--font-sans',

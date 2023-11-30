@@ -22,6 +22,7 @@ import Image from 'next/image'
 import { createQuestion, editQuestion } from '@/lib/actions/question.action'
 import { useRouter, usePathname } from 'next/navigation'
 import { Loader } from 'lucide-react'
+import { useTheme } from '@/context/ThemeProvider'
 
 interface QuestionProps {
   userId: string
@@ -33,6 +34,7 @@ interface QuestionProps {
 
 const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
   // to extract the value later
+  const { mode } = useTheme()
   const router = useRouter()
   const pathname = usePathname()
   const editorRef = useRef(null)
@@ -194,6 +196,8 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
                         'removeformat | help',
                       content_style:
                         'body { font-family:farsiSnapReg ,Helvetica,Arial,sans-serif; font-size:16px ',
+                      skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                      content_css: mode === 'dark' ? 'dark' : 'light',
                     }}
                   />
                 </FormControl>

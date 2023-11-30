@@ -4,11 +4,14 @@ import Metric from '@/components/shared/Metric'
 import ParseHTML from '@/components/shared/ParseHTML'
 import RenderTag from '@/components/shared/RenderTag'
 import Votes from '@/components/shared/Votes'
+import { getCurrentUser } from '@/lib/actions/getCurrentUser'
 import { getQuestionById } from '@/lib/actions/question.action'
 import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import React from 'react'
-
+import userImage from '../../../../public/assets/icons/user.svg'
+import { getTimestamp } from '@/lib/utils'
 type Props = {
   params: { id: string }
   searchParams: string
@@ -17,39 +20,51 @@ type Props = {
 const page = async ({ params, searchParams }: Props) => {
   const result = await getQuestionById({ questionId: params.id })
 
+  const currentUser = await getCurrentUser()
+  if (!currentUser) return
+  const userId = currentUser.id
+
+  // console.log(result)
   // const {userId} = auth()
-  const userId = '1'
+
+  if (!result.question) return notFound()
+
   return (
     <>
-      <div className="flex-start w-full flex-col">
-        <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
+      <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center  sm:gap-2">
           <Link
-            href={`/profile/${result.author.userId}`}
-            className="flex items-center justify-start gap-1"
+            href={`/profile/${result.question.author.id}`}
+            className="flex items-center  gap-1"
           >
             <Image
-              src={result.author.picture}
+              src={result.question.author.picture ?? userImage}
               className="rounded-full"
               width={22}
               height={22}
               alt="profile"
             />
-            <p className="font-semibold  ">{result.author.name}</p>
+            <p className="font-semibold  ">{result.question.author.name}</p>
           </Link>
-          <div className="flex justify-end">
+          <div className="flex justify-end ">
             <Votes
               type="Question"
-              itemId={JSON.stringify(result._id)}
-              userId={JSON.stringify(userId)}
-              upvotes={result.upvotes.length}
-              hasupVoted={result.upvotes.includes(userId)}
-              downvotes={result.downvotes.length}
-              hasdownVoted={result.downvotes.includes(userId)}
-              hasSaved={result?.saved.includes(result._id)}
+              itemId={JSON.stringify(result.question.id)}
+              userId={+userId}
+              upvotes={result.question.upvoters.length}
+              hasupVoted={result.question.upvoters.includes(
+                result.question.userId
+              )}
+              downvotes={result.question.downvoters.length}
+              hasdownVoted={result.question.downvoters.includes(
+                result.question.userId
+              )}
+              // hasdownVoted={result.question.downvotes.includes(userId)}
+              hasSaved={result?.userId?.includes(result.question.id)}
             />
           </div>
-          <h2 className="mt-3.5 w-full text-left text-lg font-semibold">
-            {result.title}
+          <h2 className="mt-3.5 w-full text-right text-lg font-semibold">
+            {result.question.title}
           </h2>
         </div>
 
@@ -57,33 +72,33 @@ const page = async ({ params, searchParams }: Props) => {
           <Metric
             imgUrl="/assets/icons/clock.svg"
             alt="clock icon"
-            value={`asked ${result.createdAt}`}
-            title=" Asked"
+            value={`${getTimestamp(result.question.created_at)}`}
+            title=" پرسیده شده"
             textStyles="text-sm md:text-md"
           />
           <Metric
             imgUrl="/assets/icons/message.svg"
             alt="Message"
-            value={result.answers.length}
-            title="Answers"
+            value={result.question.answers.length}
+            title="جواب"
             textStyles="text-sm md:text-md"
           />
           <Metric
             imgUrl="/assets/icons/eye.svg"
             alt="Views"
-            value={result.views}
-            title="Views"
+            value={+result.question.views}
+            title="مشاهده"
             textStyles="text-sm md:text-md"
           />
         </div>
       </div>
-      <ParseHTML data={result.content} />
+      <ParseHTML data={result?.question.content} />
 
       <div className="mt-8 flex flex-wrap gap-2">
-        {result.tags.map((tag: any) => (
+        {result.question.tags.map((tag: any) => (
           <RenderTag
-            key={tag._id}
-            _id={tag._id}
+            key={tag.id}
+            id={tag.id}
             name={tag.name}
             showCount={false}
           />
@@ -91,15 +106,15 @@ const page = async ({ params, searchParams }: Props) => {
       </div>
 
       <AllAnswers
-        questionId={result._id}
+        questionId={result.question.id}
         userId={userId}
-        totalAnswers={result.answers.length}
+        totalAnswers={result.question.answers.length}
         page={searchParams?.page}
         filter={searchParams?.filter}
       />
       <Answer
-        question={result.content}
-        questionId={JSON.stringify(result._id)}
+        question={result.question.content}
+        questionId={JSON.stringify(result.question.id)}
         authorId={JSON.stringify(userId)}
       />
     </>

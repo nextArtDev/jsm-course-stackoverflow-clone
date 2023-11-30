@@ -13,6 +13,7 @@ import User from '@/database/user.model'
 import { revalidatePath } from 'next/cache'
 import Answer from '@/database/answer.model'
 import Interaction from '@/database/interaction.model'
+import { prisma } from '../prisma'
 
 // export async function getQuestions(params: GetQuestionsParams) {
 //   try {
@@ -31,30 +32,59 @@ import Interaction from '@/database/interaction.model'
 // }
 export async function createAnswer(params: CreateAnswerParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { content, author, question, path } = params
 
-    const newAnswer = await Answer.create({
-      content,
-      author,
-      question,
+    // const newAnswer = await Answer.create({
+    //   content,
+    //   author,
+    //   question,
+    // })
+    const newAnswer = await prisma.answer.create({
+      data: {
+        content,
+        authorId: author,
+        questionId: question,
+      },
     })
 
     // Add the answer to the question's answers array
 
-    const questionObject = await Question.findByIdAndUpdate(question, {
-      $push: { answers: newAnswer._id },
+    // const questionObject = await Question.findByIdAndUpdate(question, {
+    //   $push: { answers: newAnswer.id },
+    // })
+    const questionObject = await prisma.question.update({
+      where: { id: author },
+      data: {
+        answers: {
+          connect: {
+            id: newAnswer.id,
+          },
+        },
+      },
+      include: { tags: true },
     })
 
-    await Interaction.create({
-      user: author,
-      action: 'answer',
-      question,
-      answer: newAnswer._id,
-      tags: questionObject.tags,
-    })
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } })
+    // Update the question to push the new answer
+
+    // await Interaction.create({
+    //   user: author,
+    //   action: 'answer',
+    //   question,
+    //   answer: newAnswer.id,
+    //   tags: questionObject.tags,
+    // })
+    // await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } })
+    // await prisma.interaction.create({
+    //   data: {
+    //     userId: author,
+    //     action: 'answer',
+    //     question: { connect: { id: question } },
+    //     answer: { connect: { id: newAnswer.id } },
+    //     tags:questionObject.tags
+    //   },
+    // })
 
     revalidatePath(path)
   } catch (error) {}
@@ -62,7 +92,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 
 export async function getAnswers(params: GetAnswersParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { questionId, sortBy, page = 1, pageSize = 10 } = params
 
@@ -72,35 +102,56 @@ export async function getAnswers(params: GetAnswersParams) {
 
     switch (sortBy) {
       case 'highestUpvotes':
-        sortOptions = { upvotes: -1 }
+        sortOptions = { upvotes: 'desc' }
         break
       case 'lowestUpvotes':
-        sortOptions = { upvotes: 1 }
+        sortOptions = { upvotes: 'asc' }
         break
       case 'recent':
-        sortOptions = { createdAt: -1 }
+        sortOptions = { created_at: 'desc' }
         break
       case 'old':
-        sortOptions = { createdAt: 1 }
+        sortOptions = { created_at: 'asc' }
         break
 
       default:
         break
     }
 
-    const answers = await Answer.find({ question: questionId })
-      .populate({
-        path: 'author',
-        model: User,
-        select: '_id userId name picture',
-      })
-      .skip(skipAmount)
-      .limit(pageSize)
-      .sort(sortOptions)
+    // const answers = await Answer.find({ question: questionId })
+    //   .populate({
+    //     path: 'author',
+    //     model: User,
+    //     select: '_id userId name picture',
+    //   })
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
+    //   .sort(sortOptions)
 
-    const totalAnswers = await Answer.countDocuments({
-      question: questionId,
+    const answers = await prisma.answer.findMany({
+      where: { questionId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            picture: true,
+          },
+        },
+        upvoters: true,
+        downvoters: true,
+      },
+      skip: skipAmount,
+      take: pageSize,
+      orderBy: sortOptions,
     })
+
+    // const totalAnswers = await Answer.countDocuments({
+    //   question: questionId,
+    // })
+    const totalAnswers = await prisma.answer.count({ where: { questionId } })
+
     const isNext = totalAnswers > skipAmount + answers.length
 
     return { answers, isNext }
