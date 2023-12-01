@@ -105,31 +105,67 @@ export async function getAllUsers(params: GetAllUsersParams) {
 }
 export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId, questionId, path } = params
-
-    const user = await User.findById({ userId })
+    // const user = await User.findById({ userId })
+    const user = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+    })
 
     if (!user) {
       throw new Error('User not found')
     }
 
-    const isQuestionSaved = user.saved.includes(questionId)
+    // const isQuestionSaved = user.saved.includes(questionId)
 
-    if (isQuestionSaved) {
+    const isQuestionSaved = await prisma.user.findFirst({
+      where: { id: userId },
+      select: {
+        saved: {
+          where: { id: questionId },
+        },
+      },
+    })
+
+    // console.log(isQuestionSaved?.saved.length)
+    // if (isQuestionSaved) {
+    //   // remove question from saved
+    //   await User.findByIdAndUpdate(
+    //     userId,
+    //     { $pull: { saved: questionId } },
+    //     { new: true }
+    //   )
+    // } else {
+    //   await User.findByIdAndUpdate(
+    //     userId,
+    //     { $addToSet: { saved: questionId } },
+    //     { new: true }
+    //   )
+    // }
+    if (isQuestionSaved?.saved.length) {
       // remove question from saved
-      await User.findByIdAndUpdate(
-        userId,
-        { $pull: { saved: questionId } },
-        { new: true }
-      )
+      // await User.findByIdAndUpdate(
+      //   userId,
+      //   { $pull: { saved: questionId } },
+      //   { new: true }
+      // )
+      await prisma.user.update({
+        where: { id: userId },
+        data: { saved: { disconnect: { id: questionId } } },
+      })
     } else {
-      await User.findByIdAndUpdate(
-        userId,
-        { $addToSet: { saved: questionId } },
-        { new: true }
-      )
+      // await User.findByIdAndUpdate(
+      //   userId,
+      //   { $addToSet: { saved: questionId } },
+      //   { new: true }
+      // )
+      await prisma.user.update({
+        where: { id: userId },
+        data: { saved: { connect: { id: questionId } } },
+      })
     }
 
     revalidatePath(path)
@@ -142,56 +178,104 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 
 export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId, page = 1, pageSize = 10, filter, searchQuery } = params
     const skipAmount = (page - 1) * pageSize
 
-    const query: FilterQuery<typeof Question> = searchQuery
-      ? { title: { $regex: new RegExp(searchQuery, 'i') } }
-      : {}
+    // const query: FilterQuery<typeof Question> = searchQuery
+    //   ? { title: { $regex: new RegExp(searchQuery, 'i') } }
+    //   : {}
+    const query: any = searchQuery ? { title: { contains: searchQuery } } : {}
 
-    let sortOptions = {}
+    // let sortOptions = {}
 
+    // switch (filter) {
+    //   case 'most_recent':
+    //     sortOptions = { createdAt: -1 }
+    //     break
+    //   case 'oldest':
+    //     sortOptions = { createdAt: 1 }
+    //     break
+    //   case 'most_voted':
+    //     sortOptions = { upvotes: -1 }
+    //     break
+    //   case 'most_viewed':
+    //     sortOptions = { views: -1 }
+    //     break
+    //   case 'most_answered':
+    //     sortOptions = { answers: -1 }
+    //     break
+    //   // case 'recommended':
+    //   //   break
+
+    //   default:
+    //     break
+    // }
+    let orderByOptions: any = {}
     switch (filter) {
       case 'most_recent':
-        sortOptions = { createdAt: -1 }
+        orderByOptions = { created_at: 'desc' }
         break
       case 'oldest':
-        sortOptions = { createdAt: 1 }
+        orderByOptions = { created_at: 'asc' }
         break
       case 'most_voted':
-        sortOptions = { upvotes: -1 }
+        orderByOptions = { upvoters: { _count: 'desc' } }
         break
       case 'most_viewed':
-        sortOptions = { views: -1 }
+        orderByOptions = { views: 'desc' }
         break
       case 'most_answered':
-        sortOptions = { answers: -1 }
+        orderByOptions = { answers: { _count: 'desc' } }
         break
       // case 'recommended':
-      //   break
-
+      //   break;
       default:
         break
     }
 
-    const user = await User.findOne({ userId }).populate({
-      path: 'saved',
-      match: query,
-      options: {
-        sort: sortOptions,
-        skip: skipAmount,
-        limit: pageSize + 1,
+    // const user = await User.findOne({ userId }).populate({
+    //   path: 'saved',
+    //   match: query,
+    //   options: {
+    //     sort: sortOptions,
+    //     skip: skipAmount,
+    //     limit: pageSize + 1,
+    //   },
+    //   populate: [
+    //     { path: 'tags', model: Tag, select: '_id name' },
+    //     { path: 'author', model: User, select: '_id userId name picture' },
+    //   ],
+    // })
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        saved: {
+          where: query,
+          orderBy: orderByOptions,
+          skip: skipAmount,
+          take: pageSize + 1,
+          include: {
+            tags: { select: { id: true, name: true } },
+            author: {
+              select: {
+                id: true,
+                // authorId: true,
+                name: true,
+                picture: true,
+              },
+            },
+            upvoters: true,
+            answers: true,
+          },
+        },
       },
-      populate: [
-        { path: 'tags', model: Tag, select: '_id name' },
-        { path: 'author', model: User, select: '_id userId name picture' },
-      ],
     })
 
-    const isNext = user.saved.length > pageSize
-    // if (!user) throw new Error('User not found')
+    if (!user) throw new Error('User not found')
+
+    const isNext = user.saved?.length > pageSize
     if (!user) return
 
     const savedQuestions = user.saved

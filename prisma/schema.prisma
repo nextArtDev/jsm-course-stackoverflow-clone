@@ -78,7 +78,7 @@ model Question {
 
   tags Tag[]
 
-  usersWhoSaved User?   @relation("UserWhoSaved", fields: [userId], references: [id])
+  usersWhoSaved User[]  @relation("UserWhoSaved")
   userId        String?
 
   Interaction Interaction[]
@@ -86,7 +86,7 @@ model Question {
 
 // https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#mongodb
 model Answer {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   content String
 
@@ -135,5 +135,5 @@ model Interaction {
 
   userId     String
   questionId String
-  answerId   Int
+  answerId   String
 }

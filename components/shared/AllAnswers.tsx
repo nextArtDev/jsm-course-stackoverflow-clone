@@ -62,12 +62,16 @@ const AllAnswers: FC<AllAnswersProps> = async ({
               <div className="flex justify-end">
                 <Votes
                   type="Answer"
-                  itemId={JSON.stringify(answer.id)}
-                  userId={JSON.stringify(userId)}
+                  itemId={answer.id}
+                  userId={userId}
                   upvotes={answer.upvoters.length}
-                  hasupVoted={answer.upvoters.includes(userId)}
+                  hasupVoted={answer.upvoters.some(
+                    (upvote) => upvote.id === userId
+                  )}
                   downvotes={answer.downvoters.length}
-                  hasdownVoted={answer.downvoters.includes(userId)}
+                  hasdownVoted={answer.downvoters.some(
+                    (downvote) => downvote.id === userId
+                  )}
                 />
               </div>
             </div>
