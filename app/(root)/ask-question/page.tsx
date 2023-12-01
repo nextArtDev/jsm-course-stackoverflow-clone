@@ -19,7 +19,7 @@ const page = async (props: Props) => {
     <div>
       <h1 className="text-2xl font-bold text-slate-200"> سوال بپرسید</h1>
       <div className="mt-9">
-        <Question userId={JSON.stringify(userId)} />
+        <Question userId={userId} />
         {/* <Question mongoUserId={JSON.stringify(mongoUser._id)} /> */}
       </div>
     </div>

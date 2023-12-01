@@ -71,11 +71,11 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
         title: values.title,
         content: values.explanation,
         tags: values.tags,
-        authorId: JSON.parse(userId),
+        authorId: userId,
         path: pathname,
       })
 
-      router.push('/')
+      // router.push('/')
       //   }
     } catch (error) {
       //
@@ -83,8 +83,8 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
     } finally {
       //
       setIsSubmitting(false)
+      form.reset()
     }
-    form.reset()
   }
   const handleInputKeyDown = (
     e: KeyboardEvent<HTMLInputElement>,
@@ -161,7 +161,7 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
                   <span className="text-rose-500">*</span>
                 </FormLabel>
 
-                <FormControl className="mt-3.5 font-farsiSnapReg">
+                <FormControl className="font-farsiSnapReg mt-3.5">
                   <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     // @ts-ignore

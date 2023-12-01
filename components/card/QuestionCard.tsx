@@ -4,15 +4,16 @@ import RenderTag from '../shared/RenderTag'
 import Metric from '../shared/Metric'
 import { formatLargeNumber, getTimestamp } from '@/lib/utils'
 import EditDeleteAction from '../shared/EditDeleteAction'
+import { User } from '@prisma/client'
 
 interface QuestionCardProps {
   id: string
   title: string
-  tags: { id: string; name: string }[]
-  // author: { id: string; name: string; picture: string }
-  author: string
-  upvotes: string[]
-  views: number
+  tags: { id: number; name: string }[]
+  author: { id: string; name: string; picture?: string | null }
+  // author: string
+  upvotes: User[]
+  views?: number
   answers: Array<object>
   createdAt: Date
   userId?: string
@@ -35,7 +36,8 @@ const QuestionCard: FC<QuestionCardProps> = ({
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
         <div>
           <span className="line-clamp-1 flex sm:hidden">
-            {getTimestamp(new Date(createdAt))}
+            {/* {getTimestamp(new Date(createdAt))} */}
+            {/* {getTimestamp(createdAt)} */}
           </span>
           <Link href={`/question/${id}`}>
             <h3 className="line-clamp-1 flex-1 text-base sm:font-semibold ">
@@ -49,27 +51,26 @@ const QuestionCard: FC<QuestionCardProps> = ({
         </SignedIn> */}
         <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
       </div>
-      <div className="mt-3.5 flex flex-wrap gap-2 ">
+      {/* <div className="mt-3.5 flex flex-wrap gap-2 ">
         {tags.map((tag) => (
-          <RenderTag key={tag.id} id={tag.id} name={tag.name} />
+          <RenderTag key={tag.id} id={+tag.id} name={tag.name} />
         ))}
-      </div>
+      </div> */}
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        {/* <Metric
-          // imgUrl={author.picture}
-          imgUrl="/assets/icons/user.svg"
+        <Metric
+          imgUrl={author.picture ?? '/assets/icons/user.svg'}
           alt="User"
-          value={author}
+          value={author.name}
           title={` - ${getTimestamp(new Date(createdAt))}`}
           textStyles="text-sm md:text-md"
           href={`/profile/${author.id}`}
           isAuthor
-        /> */}
+        />
         <div className="max-sm:flex-start flex items-center gap-3 max-sm:flex-wrap ">
           <Metric
             imgUrl="/assets/icons/like.svg"
             alt="Upvotes"
-            value={upvotes}
+            value={upvotes?.length}
             // value={formatLargeNumber(upvotes)}
             title="رای"
             textStyles="text-sm md:text-md"
@@ -85,7 +86,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
           <Metric
             imgUrl="/assets/icons/eye.svg"
             alt="Views"
-            value={views}
+            value={views?.toString}
             title="مشاهده"
             textStyles="text-sm md:text-md"
           />

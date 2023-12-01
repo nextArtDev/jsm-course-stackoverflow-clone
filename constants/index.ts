@@ -89,23 +89,23 @@ export const UserFilters = [
 ]
 export const QuestionFilters = [
   {
-    name: 'Most Recent',
+    name: 'جدیدترین',
     value: 'most_recent',
   },
   {
-    name: 'Oldest',
+    name: 'قدیمی‌ترین',
     value: 'oldest',
   },
   {
-    name: 'Most Voted',
+    name: 'بیشترین رای',
     value: 'most_voted',
   },
   {
-    name: 'Most Viewed',
+    name: 'بیشترین بازدید',
     value: 'most_viewed',
   },
   {
-    name: 'Most Answered',
+    name: 'بیشترین جواب',
     value: 'most_answered',
   },
 ]

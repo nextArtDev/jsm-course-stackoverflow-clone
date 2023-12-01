@@ -24,8 +24,15 @@ const page = async ({ params, searchParams }: Props) => {
   if (!currentUser) return
   const userId = currentUser.id
 
-  // console.log(result)
   // const {userId} = auth()
+  // const hasupVoted = result?.question?.upvoters.includes(
+  //   result?.question?.userId
+  // )
+  // console.log('hasupVoted', hasupVoted)
+  // const hasdownVoted = result?.question?.downvoters?.some(
+  //   (downvote) => downvote.id === userId
+  // )
+  // console.log('hasdownVoted', hasdownVoted)
 
   if (!result.question) return notFound()
 
@@ -46,21 +53,25 @@ const page = async ({ params, searchParams }: Props) => {
             />
             <p className="font-semibold  ">{result.question.author.name}</p>
           </Link>
-          <div className="flex justify-end ">
+          <div className="flex">
             <Votes
               type="Question"
-              itemId={JSON.stringify(result.question.id)}
-              userId={+userId}
+              itemId={result.question.id}
+              userId={userId}
               upvotes={result.question.upvoters.length}
-              hasupVoted={result.question.upvoters.includes(
-                result.question.userId
+              // If our current user has upvoted
+              // hasupVoted={result.question.upvoters.includes(userId)}
+              hasupVoted={result.question.upvoters.some(
+                (upvote) => upvote.id === userId
               )}
               downvotes={result.question.downvoters.length}
-              hasdownVoted={result.question.downvoters.includes(
-                result.question.userId
+              hasdownVoted={result.question.downvoters?.some(
+                (downvote) => downvote.id === userId
               )}
               // hasdownVoted={result.question.downvotes.includes(userId)}
-              hasSaved={result?.userId?.includes(result.question.id)}
+              hasSaved={result.question.usersWhoSaved?.some(
+                (user) => user.id === userId
+              )}
             />
           </div>
           <h2 className="mt-3.5 w-full text-right text-lg font-semibold">
