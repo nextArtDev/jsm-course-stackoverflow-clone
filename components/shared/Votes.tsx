@@ -104,7 +104,7 @@ const Votes: FC<VotesProps> = ({
     }
   }
 
-  // Views: When some one viewed
+  // Views: When some one viewed, whenever Vote component loads
   useEffect(() => {
     viewQuestion({
       questionId: itemId,

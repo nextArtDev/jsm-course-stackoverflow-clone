@@ -25,7 +25,7 @@ const AnswerCard: FC<AnswerCardProps> = ({
   // const showActionButtons = userId && userId === author.userId
   return (
     <Link
-      href={`/question/${question?._id}/#${_id}`}
+      href={`/question/${question?.id}/#${id}`}
       className="rounded-[10px] px-11 py-9"
     >
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -38,7 +38,7 @@ const AnswerCard: FC<AnswerCardProps> = ({
         {/* <SignedIn>
           {showActionButtons && <EditDeleteAction />}
         </SignedIn> */}
-        <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+        <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
