@@ -6,7 +6,7 @@ import { IQuestion } from '@/database/question.model'
 import { getQuestionsByTagId } from '@/lib/actions/tag.actions'
 import { URLProps } from '@/types'
 import { FC } from 'react'
-
+import SearchImage from '@/public/assets/icons/search.svg'
 // interface pageProps {
 //   params: { id: string }
 //   searchParams: string
@@ -19,6 +19,7 @@ const page: FC<URLProps> = async ({ params, searchParams }) => {
     searchQuery: searchParams.q,
   })
 
+  // console.log(result)
   return (
     <>
       <h1 className="font-bold text-gray-100"> {result?.tagTitle}</h1>
@@ -27,29 +28,29 @@ const page: FC<URLProps> = async ({ params, searchParams }) => {
         <LocalSearchbar
           route={`/tags/${params.id}`}
           iconPosition="left"
-          imgSrc="/assets/icons/search.svg"
-          placeholder="Search tag Question"
+          imgSrc={SearchImage}
+          placeholder="جست‌وجوی سوال تگ"
           otherClasses="flex-1"
         />
 
         <div className="mt-10 flex w-full flex-col gap-6">
-          {result?.questions.length > 0 ? (
-            result?.questions.map((question: IQuestion) => (
+          {result?.questions?.length ? (
+            result?.questions.map((question: any) => (
               <QuestionCard
-                key={question._id}
-                _id={question._id}
+                key={question.id}
+                id={question.id}
                 title={question.title}
                 tags={question.tags}
                 author={question.author}
-                upvotes={question.upvotes}
+                upvotes={question.upvoters}
                 views={question.views}
                 answers={question.answers}
-                createdAt={question.createdAt}
+                createdAt={question.created_at}
               />
             ))
           ) : (
             <NoResult
-              title="Theres no tag question to show"
+              title="سوال تگی برای نمایش وجود ندارد."
               description="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident
         quibusdam tempora veritatis id facere animi sequi ipsam adipisci, error
         repudiandae, repellendus debitis omnis ab iusto, explicabo quia quod

@@ -124,7 +124,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     // connectToDatabase()
     const currentUser = await getCurrentUser()
     const { title, content, tags, authorId, path } = params
-    console.log({ title, content, tags, authorId, path })
+    // console.log({ title, content, tags, authorId, path })
     if (!currentUser) return
 
     // const question = await Question.create({

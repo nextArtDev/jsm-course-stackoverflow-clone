@@ -56,7 +56,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
           <RenderTag key={tag.id} id={+tag.id} name={tag.name} />
         ))}
       </div> */}
-      <div className="flex-between mt-6 w-full flex-wrap gap-3">
+      <div className="mt-6 flex w-full flex-wrap justify-between gap-3">
         <Metric
           imgUrl={author.picture ?? '/assets/icons/user.svg'}
           alt="User"
@@ -86,7 +86,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
           <Metric
             imgUrl="/assets/icons/eye.svg"
             alt="Views"
-            value={views?.toString}
+            value={+views}
             title="مشاهده"
             textStyles="text-sm md:text-md"
           />

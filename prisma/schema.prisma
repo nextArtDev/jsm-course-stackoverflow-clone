@@ -63,7 +63,7 @@ model Question {
 
   title   String
   content String
-  views   Int?
+  views   Int    @default(0)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -135,5 +135,5 @@ model Interaction {
 
   userId     String
   questionId String
-  answerId   String
+  answerId   String?
 }

@@ -125,33 +125,66 @@ export async function getAllTags(params: GetAllTagsParams) {
 
 export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
     const { tagId, page = 1, pageSize = 10, filter, searchQuery } = params
 
     const skipAmount = (page - 1) * pageSize
 
-    const tagFilter: FilterQuery<ITag> = { _id: tagId }
-    const tag = await Tag.findOne({ tagFilter }).populate({
-      path: 'questions',
-      model: Question,
-      match: searchQuery
-        ? { title: { $regex: searchQuery, $options: 'i' } }
-        : {},
-      options: {
-        sort: { createdAt: -1 },
-        skip: skipAmount,
-        limit: pageSize + 1,
+    // const tagFilter: FilterQuery<ITag> = { id: tagId }
+    // const tag = await Tag.findOne({ tagFilter }).populate({
+    //   path: 'questions',
+    //   model: Question,
+    //   match: searchQuery
+    //     ? { title: { $regex: searchQuery, $options: 'i' } }
+    //     : {},
+    //   options: {
+    //     sort: { createdAt: -1 },
+    //     skip: skipAmount,
+    //     limit: pageSize + 1,
+    //   },
+    //   populate: [
+    //     { path: 'tags', model: Tag, select: '_id name' },
+    //     { path: 'author', model: User, select: '_id tagId name picture' },
+    //   ],
+    // })
+
+    // Prisma query options
+
+    const tag = await prisma.tag.findFirst({
+      where: { id: +tagId },
+      include: {
+        questions: {
+          where: searchQuery ? { title: { contains: searchQuery } } : {},
+          orderBy: { created_at: 'desc' },
+          skip: skipAmount,
+          take: pageSize + 1,
+          include: {
+            tags: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            author: {
+              select: {
+                id: true,
+                authoredQuestions: true,
+                name: true,
+                picture: true,
+              },
+            },
+            upvoters: true,
+            answers: true,
+          },
+        },
       },
-      populate: [
-        { path: 'tags', model: Tag, select: '_id name' },
-        { path: 'author', model: User, select: '_id tagId name picture' },
-      ],
     })
 
     // if (!tag) throw new Error('User not found')
     if (!tag) return
 
-    const isNext = tags.question.length > pageSize
+    // const isNext = tags.question.length > pageSize
+    const isNext = tag.questions.length > pageSize
 
     const questions = tag.questions
 
