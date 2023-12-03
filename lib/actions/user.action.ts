@@ -289,78 +289,174 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 }
 export async function getUserInfo(params: GetUserByIdParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId } = params
 
-    const user = await User.findOne({ userId })
+    // const user = await User.findOne({ userId })
+
+    // if (!user) return
+
+    // const totalQuestions = await Question.countDocuments({ author: user._id })
+    // const totalAnswers = await Answer.countDocuments({ author: user._id })
+
+    // const [questionUpvotes] = await Question.aggregate([
+    //   { $match: { author: user._id } },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       upvotes: { $size: '$upvotes' },
+    //     },
+    //   },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalUpvotes: { $sum: '$upvotes' },
+    //     },
+    //   },
+    // ])
+
+    // const [answerUpvotes] = await Answer.aggregate([
+    //   { $match: { author: user._id } },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       upvotes: { $size: '$upvotes' },
+    //     },
+    //   },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalUpvotes: { $sum: '$upvotes' },
+    //     },
+    //   },
+    // ])
+
+    // const [questionViews] = await Answer.aggregate([
+    //   { $match: { author: user._id } },
+
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalViews: { $sum: '$views' },
+    //     },
+    //   },
+    // ])
+
+    // const criteria = [
+    //   { type: 'QUESTION_COUNT' as BadgeCriteriaType, count: totalQuestions },
+    //   { type: 'ANSWER_COUNT' as BadgeCriteriaType, count: totalAnswers },
+    //   {
+    //     type: 'QUESTION_UPVOTES' as BadgeCriteriaType,
+    //     count: questionUpvotes?.totalUpvotes || 0,
+    //   },
+    //   {
+    //     type: 'ANSWER_UPVOTES' as BadgeCriteriaType,
+    //     count: answerUpvotes?.totalUpvotes || 0,
+    //   },
+    //   {
+    //     type: 'TOTAL_VIEWS' as BadgeCriteriaType,
+    //     count: questionViews?.totalViews || 0,
+    //   },
+    // ]
+
+    // const badgeCounts = assignBadges({ criteria })
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
 
     if (!user) return
 
-    const totalQuestions = await Question.countDocuments({ author: user._id })
-    const totalAnswers = await Answer.countDocuments({ author: user._id })
+    const totalQuestions = await prisma.question.count({
+      where: {
+        authorId: user.id,
+      },
+    })
 
-    const [questionUpvotes] = await Question.aggregate([
-      { $match: { author: user._id } },
-      {
-        $project: {
-          _id: 0,
-          upvotes: { $size: '$upvotes' },
-        },
+    const totalAnswers = await prisma.answer.count({
+      where: {
+        authorId: user.id,
       },
-      {
-        $group: {
-          _id: null,
-          totalUpvotes: { $sum: '$upvotes' },
-        },
-      },
-    ])
+    })
 
-    const [answerUpvotes] = await Answer.aggregate([
-      { $match: { author: user._id } },
-      {
-        $project: {
-          _id: 0,
-          upvotes: { $size: '$upvotes' },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          totalUpvotes: { $sum: '$upvotes' },
-        },
-      },
-    ])
+    // const questionUpvotes = await prisma.question.aggregate({
+    //   where: {
+    //     authorId: user.id,
+    //   },
+    //   _count: {
 
-    const [questionViews] = await Answer.aggregate([
-      { $match: { author: user._id } },
+    //     upvoters: true,
+    //     where: {
+    //       upvoters: {
+    //         some: {
+    //           id: {
+    //             in: prisma.user.findMany({
+    //               select: {
+    //                 id: true,
+    //               },
+    //             }),
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // })
 
-      {
-        $group: {
-          _id: null,
-          totalViews: { $sum: '$views' },
+    const questionUpvotes = await prisma.question.count({
+      where: {
+        authorId: user.id,
+        upvoters: {
+          some: {},
         },
       },
-    ])
+    })
+
+    const answerUpvotes = await prisma.answer.count({
+      where: {
+        authorId: user.id,
+        upvoters: {
+          some: {},
+        },
+      },
+    })
+
+    const questionViews = await prisma.question.aggregate({
+      where: {
+        authorId: user.id,
+      },
+      _sum: {
+        views: true,
+      },
+    })
 
     const criteria = [
-      { type: 'QUESTION_COUNT' as BadgeCriteriaType, count: totalQuestions },
-      { type: 'ANSWER_COUNT' as BadgeCriteriaType, count: totalAnswers },
       {
-        type: 'QUESTION_UPVOTES' as BadgeCriteriaType,
-        count: questionUpvotes?.totalUpvotes || 0,
+        type: 'QUESTION_COUNT',
+        count: totalQuestions,
       },
       {
-        type: 'ANSWER_UPVOTES' as BadgeCriteriaType,
-        count: answerUpvotes?.totalUpvotes || 0,
+        type: 'ANSWER_COUNT',
+        count: totalAnswers,
       },
       {
-        type: 'TOTAL_VIEWS' as BadgeCriteriaType,
-        count: questionViews?.totalViews || 0,
+        type: 'QUESTION_UPVOTES',
+        count: questionUpvotes,
+      },
+      {
+        type: 'ANSWER_UPVOTES',
+        count: answerUpvotes,
+      },
+      {
+        type: 'TOTAL_VIEWS',
+        count: questionViews._sum.views || 0,
       },
     ]
 
     const badgeCounts = assignBadges({ criteria })
+
     return {
       user,
       totalAnswers,
@@ -376,25 +472,51 @@ export async function getUserInfo(params: GetUserByIdParams) {
 }
 export async function getUserQuestions(params: GetUserStatsParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId, page = 1, pageSize = 10 } = params
 
     const skipAmount = (page - 1) * pageSize
 
-    const totalQuestions = await Question.countDocuments({
-      author: userId,
+    // const totalQuestions = await Question.countDocuments({
+    //   author: userId,
+    // })
+
+    const totalQuestions = await prisma.question.count({
+      where: {
+        authorId: userId,
+      },
     })
 
-    const userQuestions = await Question.find({
-      author: userId,
-    })
-      .sort({ createdAt: -1, views: -1, upvotes: -1 })
-      .populate('tags', '_id name')
-      .populate('author', '_id userId name picture')
-      .skip(skipAmount)
-      .limit(pageSize)
+    // const userQuestions = await Question.find({
+    //   author: userId,
+    // })
+    //   .sort({ createdAt: -1, views: -1, upvotes: -1 })
+    //   .populate('tags', '_id name')
+    //   .populate('author', '_id userId name picture')
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
 
+    const userQuestions = await prisma.question.findMany({
+      where: { authorId: userId },
+      include: {
+        tags: {
+          select: { id: true, name: true },
+        },
+        author: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        upvoters: true,
+        answers: true,
+      },
+      skip: skipAmount,
+      take: pageSize + 1,
+      orderBy: [{ upvoters: { _count: 'desc' } }, { views: 'desc' }],
+    })
     const isNext = totalQuestions > skipAmount + userQuestions.length
 
     return { questions: userQuestions, totalQuestions, isNext }
@@ -411,18 +533,40 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     const { userId, page = 1, pageSize = 10 } = params
     const skipAmount = (page - 1) * pageSize
 
-    const totalAnswers = await Answer.countDocuments({
-      author: userId,
-    })
+    // const totalAnswers = await Answer.countDocuments({
+    //   author: userId,
+    // })
 
-    const userAnswers = await Answer.find({
-      author: userId,
+    // const userAnswers = await Answer.find({
+    //   author: userId,
+    // })
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
+    //   .sort({ upvotes: -1 })
+    //   .populate('question', '_id title')
+    //   .populate('author', '_id userId name picture')
+    const totalAnswers = await prisma.answer.count({
+      where: {
+        authorId: userId,
+      },
     })
-      .skip(skipAmount)
-      .limit(pageSize)
-      .sort({ upvotes: -1 })
-      .populate('question', '_id title')
-      .populate('author', '_id userId name picture')
+    const userAnswers = await prisma.answer.findMany({
+      where: { authorId: userId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            picture: true,
+          },
+        },
+        upvoters: true,
+        Question: true,
+      },
+      skip: skipAmount,
+      take: pageSize + 1,
+      orderBy: { upvoters: { _count: 'desc' } },
+    })
 
     const isNext = totalAnswers > skipAmount + userAnswers.length
 

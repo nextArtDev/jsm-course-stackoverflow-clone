@@ -2,72 +2,82 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// Assuming you have a Prisma model named 'User'
-// and 'saved' is a relation between users and saved questions
-
-interface GetUserDataParams {
+interface GetUserStatsParams {
   userId: string
-  filter:
-    | 'most_recent'
-    | 'oldest'
-    | 'most_voted'
-    | 'most_viewed'
-    | 'most_answered'
-  query: any // Replace with the actual query structure for matching
-  skipAmount: number
-  pageSize: number
 }
 
-export const getUserData = async (params: GetUserDataParams) => {
+export const getUserStats = async (params: GetUserStatsParams) => {
   try {
-    const { userId, filter, query, skipAmount, pageSize } = params
+    const { userId } = params
 
-    // Define sort options based on the filter
-    let orderByOptions: any = {}
-    switch (filter) {
-      case 'most_recent':
-        orderByOptions = { createdAt: 'desc' }
-        break
-      case 'oldest':
-        orderByOptions = { createdAt: 'asc' }
-        break
-      case 'most_voted':
-        orderByOptions = { upvotes: 'desc' }
-        break
-      case 'most_viewed':
-        orderByOptions = { views: 'desc' }
-        break
-      case 'most_answered':
-        orderByOptions = { answers: 'desc' }
-        break
-      // case 'recommended':
-      //   break;
-      default:
-        break
-    }
-
-    // Fetch user data with sorting and pagination
-    const userData = await prisma.user.findUnique({
+    // Fetch user data
+    const user = await prisma.user.findUnique({
       where: { userId },
-      include: {
-        saved: {
-          where: query,
-          orderBy: orderByOptions,
-          skip: skipAmount,
-          take: pageSize + 1,
-          include: {
-            tags: { select: { _id: true, name: true } },
-            author: {
-              select: { _id: true, userId: true, name: true, picture: true },
-            },
-          },
-        },
-      },
+      select: { userId: true, reputation: true },
     })
 
-    return userData
+    if (!user) {
+      return null // or handle accordingly
+    }
+
+    // Count total questions
+    const totalQuestions = await prisma.question.count({
+      where: { authorId: user.userId },
+    })
+
+    // Count total answers
+    const totalAnswers = await prisma.answer.count({
+      where: { authorId: user.userId },
+    })
+
+    // Calculate total question upvotes
+    const questionUpvotesCount = await prisma.upvote.aggregate({
+      where: { question: { authorId: user.userId } },
+      _count: true,
+    })
+
+    // Calculate total answer upvotes
+    const answerUpvotesCount = await prisma.upvote.aggregate({
+      where: { answer: { authorId: user.userId } },
+      _count: true,
+    })
+
+    // Calculate total question views
+    const questionViews = await prisma.question.aggregate({
+      where: { authorId: user.userId },
+      _sum: { views: true },
+    })
+
+    // Build criteria for badge calculation
+    const criteria = [
+      { type: 'QUESTION_COUNT' as BadgeCriteriaType, count: totalQuestions },
+      { type: 'ANSWER_COUNT' as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: 'QUESTION_UPVOTES' as BadgeCriteriaType,
+        count: questionUpvotesCount || 0,
+      },
+      {
+        type: 'ANSWER_UPVOTES' as BadgeCriteriaType,
+        count: answerUpvotesCount || 0,
+      },
+      {
+        type: 'TOTAL_VIEWS' as BadgeCriteriaType,
+        count: questionViews?._sum?.views || 0,
+      },
+    ]
+
+    // Calculate badge counts
+    const badgeCounts = assignBadges({ criteria })
+
+    return {
+      user,
+      totalAnswers,
+      totalQuestions,
+      badgeCounts,
+      reputation: user.reputation,
+    }
   } catch (error) {
-    console.error('Error fetching user data:', error)
+    console.error('Error fetching user stats:', error)
     throw error
   } finally {
     await prisma.$disconnect()
@@ -75,13 +85,6 @@ export const getUserData = async (params: GetUserDataParams) => {
 }
 
 // Example usage:
-const userDataParams = {
-  userId: 'your_user_id',
-  filter: 'most_recent',
-  query: {}, // Replace with the actual query structure for matching
-  skipAmount: 0,
-  pageSize: 10,
-}
-
-const result = await getUserData(userDataParams)
+const userId = 'your_user_id'
+const result = await getUserStats({ userId })
 console.log(result)

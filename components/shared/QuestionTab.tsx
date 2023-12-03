@@ -17,16 +17,16 @@ const QuestionTab: FC<QuestionTabProps> = async ({ searchParams, userId }) => {
     <>
       {result.questions.map((question) => (
         <QuestionCard
-          key={question._id}
-          _id={question._id}
+          key={question.id}
+          id={question.id}
           userId={userId}
           title={question.title}
           tags={question.tags}
           author={question.author}
-          upvotes={question.upvotes}
+          upvotes={question.upvoters}
           views={question.views}
           answers={question.answers}
-          createdAt={question.createdAt}
+          createdAt={question.created_at}
         />
       ))}
       <Pagination

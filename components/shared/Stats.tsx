@@ -4,6 +4,7 @@ import GoldImage from '../../public/assets/icons/gold-medal.svg'
 import SilverImage from '../../public/assets/icons/silver-medal.svg'
 import BronzeImage from '../../public/assets/icons/bronze-medal.svg'
 import { BadgeCounts } from '@/types'
+import { formatLargeNumber } from '@/lib/utils'
 interface StatsProps {
   totalQuestions: number
   totalAnswers: number
@@ -19,32 +20,32 @@ const Stats: FC<StatsProps> = ({
 }) => {
   return (
     <div className="mt-10">
-      <h4 className="font-semibold ">Stats - {reputation}</h4>
-      <div className="xs:grid-cols-2 mt-5 grid grid-cols-1 gap-5 md:grid-cols-4 ">
+      <h4 className="font-semibold ">آمار - {reputation}</h4>
+      <div className="xs:grid-cols-1 mt-5 grid grid-cols-2 gap-5 md:grid-cols-4 ">
         <div className="flex flex-wrap items-center justify-evenly gap-4 rounded-md border shadow-lime-200 ">
           <div>
-            <p className="font-semibold">{totalQuestions}</p>
-            <p>Questions</p>
+            <p className="font-semibold">{formatLargeNumber(totalQuestions)}</p>
+            <p>سوال</p>
           </div>
           <div>
-            <p className="font-semibold">{totalAnswers}</p>
-            <p>Answers</p>
+            <p className="font-semibold">{formatLargeNumber(totalAnswers)}</p>
+            <p>جواب</p>
           </div>
         </div>
         <StatsCard
           imgUrl={GoldImage.src}
           value={badges.GOLD}
-          title="Gold Badges"
+          title="نشان‌های طلا"
         />
         <StatsCard
           imgUrl={SilverImage.src}
           value={badges.SILVER}
-          title="Silver Badges"
+          title="نشان‌های نقره"
         />
         <StatsCard
           imgUrl={BronzeImage.src}
           value={badges.BRONZE}
-          title="Bronze Badges"
+          title="نشان‌های برنز"
         />
       </div>
     </div>

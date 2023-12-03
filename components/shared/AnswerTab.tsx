@@ -17,13 +17,13 @@ const AnswerTab: FC<AnswerTabProps> = async ({ userId, searchParams }) => {
     <>
       {result.answers.map((item) => (
         <AnswerCard
-          key={item._id}
+          key={item.id}
           userId={userId}
-          _id={item._id}
-          question={item.question}
+          id={item.id}
+          question={item.Question}
           author={item.author}
-          upvotes={item.upvotes.length}
-          createdAt={item.createdAt}
+          upvotes={item.upvoters}
+          createdAt={item.created_at}
         />
       ))}
       <Pagination
