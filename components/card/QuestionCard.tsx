@@ -37,7 +37,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
         <div>
           <span className="line-clamp-1 flex sm:hidden">
             {/* {getTimestamp(new Date(createdAt))} */}
-            {/* {getTimestamp(createdAt)} */}
+            {getTimestamp(createdAt)}
           </span>
           <Link href={`/question/${id}`}>
             <h3 className="line-clamp-1 flex-1 text-base sm:font-semibold ">
@@ -51,11 +51,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
         </SignedIn> */}
         <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
       </div>
-      {/* <div className="mt-3.5 flex flex-wrap gap-2 ">
+      <div className="mt-3.5 flex flex-wrap gap-2 ">
         {tags.map((tag) => (
-          <RenderTag key={tag.id} id={+tag.id} name={tag.name} />
+          <RenderTag key={tag.id} id={tag.id.toString()} name={tag.name} />
         ))}
-      </div> */}
+      </div>
       <div className="mt-6 flex w-full flex-wrap justify-between gap-3">
         <Metric
           imgUrl={author.picture ?? '/assets/icons/user.svg'}

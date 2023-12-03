@@ -4,18 +4,19 @@ import Link from 'next/link'
 import { getTimestamp } from '@/lib/utils'
 import RenderTag from '../shared/RenderTag'
 import EditDeleteAction from '../shared/EditDeleteAction'
+import { Question, User } from '@prisma/client'
 
 interface AnswerCardProps {
-  _id: string
-  author: string
-  upvotes: string[]
-  question: Array<object>
+  id: string
+  author: Partial<User>
+  upvotes: Partial<User>[]
+  question: Question
   createdAt: Date
   userId?: string
 }
 
 const AnswerCard: FC<AnswerCardProps> = ({
-  _id,
+  id,
   author,
   upvotes,
   question,
@@ -40,14 +41,14 @@ const AnswerCard: FC<AnswerCardProps> = ({
         </SignedIn> */}
         <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
       </div>
-      <div className="flex-between mt-6 w-full flex-wrap gap-3">
+      <div className="mt-6 flex w-full flex-wrap justify-between gap-3">
         <Metric
-          imgUrl={author.picture}
+          imgUrl={author.picture || '/assets/icons/user.svg'}
           alt="User"
-          value={author.name}
-          title={` - asked ${getTimestamp(new Date(createdAt))}`}
+          value={author.name!}
+          title={` - ${getTimestamp(new Date(createdAt))}`}
           textStyles="text-sm md:text-md"
-          href={`/profile/${author.userId}`}
+          href={`/profile/${author.id}`}
           isAuthor
         />
         <div className="flex items-center justify-center gap-3">
@@ -55,7 +56,7 @@ const AnswerCard: FC<AnswerCardProps> = ({
             imgUrl="/assets/icons/like.svg"
             alt="Upvotes"
             value={upvotes.length}
-            title="Votes"
+            title="رای"
             textStyles="text-sm md:text-md"
           />
         </div>
