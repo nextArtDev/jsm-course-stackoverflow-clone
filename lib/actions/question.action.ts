@@ -412,25 +412,158 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   }
 }
 
-// export async function deleteQuestion(params: DeleteQuestionParams) {
-//   try {
-//     connectToDatabase()
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    // connectToDatabase()
 
-//     const { questionId, path } = params
-//     await Question.deleteOne({ id: questionId })
-//     await Answer.deleteMany({ question: questionId })
-//     await Interaction.deleteMany({ question: questionId })
-//     await Tag.updateMany(
-//       { questions: questionId },
-//       { $pull: { questions: questionId } }
-//     )
+    const { questionId, path } = params
 
-//     revalidatePath(path)
-//   } catch (error) {
-//     console.log(error)
-//     throw error
-//   }
-// }
+    // await Question.deleteOne({ id: questionId })
+    // await Answer.deleteMany({ question: questionId })
+    // await Interaction.deleteMany({ question: questionId })
+    // await Tag.updateMany(
+    //   { questions: questionId },
+    //   { $pull: { questions: questionId } }
+    // )
+
+    // const tagsToDisconnect = [{ id: 'tag_id_1' }, { id: 'tag_id_2' }] // Replace with actual tag IDs
+
+    // const tagIds = tagsToDisconnect.map((tag) => tag.id)
+
+    // const questionUpdate = await prisma.question.update({
+    //   where: { id: questionId },
+    //   data: {
+    //     tags: {
+    //       disconnect: tagIds.map((id) => ({ id })),
+    //     },
+    //   },
+    // })
+    // const questionId = 'your_question_id'
+    // const tagsToDisconnect = ['tag_id_1', 'tag_id_2']
+    // // Replace with actual tag IDs
+
+    // const questionUpdate = await
+    // prisma.question.update({
+    //   where: {
+    //     id: questionId,
+    //   },
+
+    //   data: {
+    //     tags: {
+    //       disconnect: tagsToDisconnect.map((tagId) => ({
+    //         id: tagId,
+    //       })),
+    //     },
+    //   },
+    // })
+
+    // TAGS
+
+    const tagsToDisconnect = await prisma.question
+      .findUnique({ where: { id: questionId } })
+      .tags()
+
+    const tagsQuestions = await prisma.tag.findMany({
+      where: { id: { in: tagsToDisconnect?.map((t) => +t.id) } },
+      include: { questions: { select: { id: true } } },
+    })
+    // console.log(tagsQuestions.map((tagsQuestion) => tagsQuestion.id))
+    const tagIds = tagsQuestions.map((tagsQuestion) => tagsQuestion.id)
+
+    const questionUpdate = await prisma.question.update({
+      where: { id: questionId },
+      data: {
+        tags: {
+          disconnect: tagIds.map((tagId) => ({ id: +tagId })),
+        },
+      },
+    })
+
+    // for (const tagId of tagIds) {
+    //   console.log(tagId)
+    //   const isTagLast = await prisma.tag.count({ where: { id: +tagId } })
+    //   console.log(isTagLast)
+    //   if (isTagLast === 1) {
+    //     await prisma.tag.delete({ where: { id: +tagId } })
+    //   }
+    // }
+
+    // const answersToDisconnect = await prisma.question
+    //   .findUnique({ where: { id: questionId } })
+    //   .answers()
+
+    // const answersQuestions = await prisma.answer.findMany({
+    //   where: { id: { in: answersToDisconnect?.map((t) => t.id) } },
+    //   include: { Question: { select: { id: true } } },
+    // })
+    // // console.log(answersQuestions.map((answersQuestion) => answersQuestion.id))
+
+    // const answerIds = answersQuestions.map(
+    //   (answersQuestion) => answersQuestion.id
+    // )
+
+    // const questionAnswerUpdate = await prisma.question.update({
+    //   where: { id: questionId },
+    //   data: {
+    //     answers: {
+    //       disconnect: answerIds.map((answerId) => ({ id: answerId })),
+    //     },
+    //   },
+    // })
+
+    await prisma.answer.deleteMany({ where: { questionId } })
+
+    await prisma.interaction.deleteMany({
+      where: { questionId },
+      // data: { questionId: undefined },
+    })
+    await prisma.question.delete({ where: { id: questionId } })
+
+    // console.log(questionAnswerUpdate)
+    // await prisma.tag.deleteMany({
+    //   where: { id: { in: tagsToDisconnect?.map((t) => +t.id) } },
+    // })
+    // console.log(tagsQuestions)
+    // await prisma.tag.updateMany({
+    //   where: { id: { in: tagsToDisconnect?.map((t) => +t.id) } },
+    //   data: {
+    //     id: {},
+    //   },
+    // })
+    // await prisma.answer.updateMany({
+    //   where: { questionId },
+    //   data: { questionId: undefined },
+    // })
+    // const del = await prisma.question.delete({ where: { id: questionId } })
+    // console.log({ del })
+
+    // await prisma.answer.deleteMany({ where: { questionId } })
+    // await prisma.interaction.deleteMany({ where: { questionId } })
+
+    // // Disconnect the question from the Answer model
+
+    // // Disconnect the question from the Question model
+    // await prisma.question.update({
+    //   where: { id: questionId },
+    //   data: { tags: { disconnect: [{ id: 'tag_id' }] } }, // Replace 'tag_id' with the actual tag ID
+    // })
+
+    // // Disconnect the question from the Tag model
+    // await prisma.tag.updateMany({
+    //   where: { questions: { some: { id: questionId } } },
+    //   data: {
+    //     questions: {
+    //       disconnect: { id: questionId },
+    //     },
+    //   },
+    // })
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 // export async function editQuestion(params: EditQuestionParams) {
 //   try {

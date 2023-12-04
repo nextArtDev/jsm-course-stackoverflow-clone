@@ -23,7 +23,7 @@ const AnswerCard: FC<AnswerCardProps> = ({
   createdAt,
   userId,
 }) => {
-  // const showActionButtons = userId && userId === author.userId
+  const showActionButtons = userId && userId === author.id
   return (
     <Link
       href={`/question/${question?.id}/#${id}`}
@@ -34,12 +34,12 @@ const AnswerCard: FC<AnswerCardProps> = ({
           <span className="line-clamp-1 flex sm:hidden">
             {getTimestamp(createdAt)}
           </span>
-          <h3 className="line-clamp-1 flex sm:hidden">{question.title}</h3>
+          <h3 className="line-clamp-1 flex  ">{question.title}</h3>
         </div>
         {/* <SignedIn>
           {showActionButtons && <EditDeleteAction />}
         </SignedIn> */}
-        <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
+        {showActionButtons && <EditDeleteAction type="Answer" itemId={id} />}
       </div>
       <div className="mt-6 flex w-full flex-wrap justify-between gap-3">
         <Metric

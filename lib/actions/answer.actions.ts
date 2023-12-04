@@ -311,19 +311,27 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
 }
 export async function deleteAnswer(params: DeleteAnswerParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { answerId, path } = params
-    const answer = await Answer.findById(answerId)
+    console.log({ answerId, path })
+    // const answer = await Answer.findById(answerId)
+    // if (!answer) return
+
+    // await Answer.deleteOne({ _id: answerId })
+    // await Question.updateMany(
+    //   { _id: answer.question },
+    //   { $pull: { answers: answerId } }
+    // )
+    // await Interaction.deleteMany({ answer: answerId })
+
+    const answer = await prisma.answer.findUnique({ where: { id: answerId } })
     if (!answer) return
 
-    await Answer.deleteOne({ _id: answerId })
-    await Question.updateMany(
-      { _id: answer.question },
-      { $pull: { answers: answerId } }
-    )
-    await Interaction.deleteMany({ answer: answerId })
+    await prisma.answer.delete({ where: { id: answerId } })
+    // await prisma.question.updateMany({where:{answers}})
 
+    await prisma.interaction.deleteMany({ where: { answerId } })
     revalidatePath(path)
   } catch (error) {
     console.log(error)
