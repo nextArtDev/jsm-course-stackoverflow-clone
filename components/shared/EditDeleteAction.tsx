@@ -14,16 +14,16 @@ const EditDeleteAction: FC<EditDeleteActionProps> = ({ type, itemId }) => {
   const pathname = usePathname()
   const router = useRouter()
   const handleEdit = () => {
-    router.push(`/question/edit/${JSON.parse(itemId)}`)
+    router.push(`/question/edit/${itemId}`)
   }
   const handleDelete = async () => {
     if (type === 'Question') {
       // Delete question
-      await deleteQuestion({ questionId: JSON.parse(itemId), path: pathname })
+      await deleteQuestion({ questionId: itemId, path: pathname })
     } else if (type === 'Answer') {
       // Delete answer
       await deleteAnswer({
-        answerId: JSON.parse(itemId),
+        answerId: itemId,
         path: pathname,
       })
     }
@@ -42,7 +42,7 @@ const EditDeleteAction: FC<EditDeleteActionProps> = ({ type, itemId }) => {
       )}
       <Image
         src="/assets/icons/trash.svg"
-        alt="Edit"
+        alt="Delete"
         width={14}
         height={14}
         className="cursor-pointer object-contain"

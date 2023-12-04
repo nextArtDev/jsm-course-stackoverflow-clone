@@ -30,7 +30,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
   createdAt,
   userId,
 }) => {
-  // const showActionButtons = userId && userId === author.userId
+  const showActionButtons = userId && userId === author.id
   return (
     <section className="rounded-[10px] p-9 text-slate-300 sm:px-11 ">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -49,7 +49,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
         {/* <SignedIn>
           {showActionButtons && <EditDeleteAction />}
         </SignedIn> */}
-        <EditDeleteAction type="Question" itemId={JSON.stringify(id)} />
+        {showActionButtons && <EditDeleteAction type="Question" itemId={id} />}
       </div>
       <div className="mt-3.5 flex flex-wrap gap-2 ">
         {tags.map((tag) => (
