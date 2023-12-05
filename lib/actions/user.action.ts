@@ -580,12 +580,22 @@ export async function getUserAnswers(params: GetUserStatsParams) {
 
 export async function updateUser(params: UpdateUserParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { userId, updateData, path } = params
 
-    await User.findOneAndUpdate({ userId }, updateData, {
-      new: true,
+    // await User.findOneAndUpdate({ userId }, updateData, {
+    //   new: true,
+    // })
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: updateData.name,
+        portfolioWebsite: updateData.portfolioWebsite,
+        location: updateData.location,
+        bio: updateData.bio,
+      },
     })
 
     revalidatePath(path)

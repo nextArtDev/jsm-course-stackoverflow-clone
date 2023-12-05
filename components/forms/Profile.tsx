@@ -34,34 +34,34 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
       name: parsedUser.name || '',
-      username: parsedUser.username || '',
-      portfolioWebsite: parsedUser.name || '',
+      // password: parsedUser.password || '',
+      portfolioWebsite: parsedUser.portfolioWebsite || '',
       location: parsedUser.location || '',
-      bio: parsedUser.name || '',
+      bio: parsedUser.bio || '',
     },
   })
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof ProfileSchema>) {
     setIsSubmitting(true)
-    await updateUser({
-      userId,
-      updateData: {
-        name: values.name,
-        username: values.username,
-        portfolioWebsite: values.portfolioWebsite,
-        location: values.location,
-        bio: values.bio,
-      },
-      path: pathname,
-    })
     try {
+      await updateUser({
+        userId,
+        updateData: {
+          name: values.name,
+          // password: values.password,
+          portfolioWebsite: values?.portfolioWebsite,
+          location: values?.location,
+          bio: values?.bio,
+        },
+        path: pathname,
+      })
       router.back()
     } catch (error) {
       console.log(error)
     } finally {
       setIsSubmitting(false)
-      console.log(values)
+      // console.log(values)
     }
   }
 
@@ -77,11 +77,11 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
           render={({ field }) => (
             <FormItem className="space-y-3.5">
               <FormLabel>
-                Name <span className="text-primary-500">*</span>{' '}
+                نام <span className="text-primary-500">*</span>{' '}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Your name"
+                  placeholder="نام"
                   {...field}
                   className="bg-slate-400 min-h-[56px] border placeholder:text-slate-800"
                 />
@@ -91,17 +91,18 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
-          name="username"
+          name="password"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
               <FormLabel>
-                Username <span className="text-primary-500">*</span>{' '}
+                رمز عبور<span className="text-primary-500">*</span>{' '}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Your username"
+                  placeholder="رمز عبور"
+                  type="password"
                   {...field}
                   className="bg-slate-400 min-h-[56px] border  placeholder:text-slate-800"
                 />
@@ -110,17 +111,17 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="portfolioWebsite"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Website</FormLabel>
+              <FormLabel>وبسایت</FormLabel>
               <FormControl>
                 <Input
                   type="url"
-                  placeholder="Your website"
+                  placeholder="وبسایت"
                   {...field}
                   className="bg-slate-400 min-h-[56px] border placeholder:text-slate-800"
                 />
@@ -135,11 +136,10 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
           name="location"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Location</FormLabel>
+              <FormLabel>موقعیت</FormLabel>
               <FormControl>
                 <Input
-                  type="url"
-                  placeholder="Your location"
+                  placeholder="آدرس"
                   {...field}
                   className="bg-slate-400 min-h-[56px] border placeholder:text-slate-800"
                 />
@@ -154,10 +154,10 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
           name="bio"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>بیوگرافی</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Your bio"
+                  placeholder="بیوگرافی"
                   {...field}
                   className="bg-slate-400 min-h-[56px] border placeholder:text-slate-800"
                 />
@@ -167,9 +167,9 @@ const Profile: FC<ProfileProps> = ({ userId, user }) => {
             </FormItem>
           )}
         />
-        <div className="mt-7 flex justify-end">
-          <Button disabled={isSubmitting} type="submit" className="w-fit">
-            {isSubmitting ? ' Saving...' : 'Save'}
+        <div className="mt-7 flex justify-start">
+          <Button disabled={isSubmitting} type="submit" className="w-full">
+            {isSubmitting ? ' ذخیره...' : 'ذخیره'}
           </Button>
         </div>
       </form>

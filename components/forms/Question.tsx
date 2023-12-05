@@ -42,13 +42,16 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
 
   const parsedQuestionDetails =
     questionDetails && JSON.parse(questionDetails || '')
+  // console.log(parsedQuestionDetails.question)
 
-  const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name)
+  const groupedTags = parsedQuestionDetails?.question.tags.map(
+    (tag: any) => tag.name
+  )
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: parsedQuestionDetails?.title || '',
-      explanation: parsedQuestionDetails?.content || '',
+      title: parsedQuestionDetails?.question.title || '',
+      explanation: parsedQuestionDetails?.question.content || '',
       tags: groupedTags || [],
     },
   })
@@ -57,26 +60,26 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
     setIsSubmitting(true)
 
     try {
-      console.log(values)
-      //   if (type === 'Edit') {
-      //     await editQuestion({
-      //       questionId: parsedQuestionDetails.id,
-      //       title: values.title,
-      //       content: values.explanation,
-      //       path: pathname,
-      //     })
-      //     router.push(`/question/${parsedQuestionDetails.id}`)
-      //   } else {
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        authorId: userId,
-        path: pathname,
-      })
+      // console.log(values)
+      if (type === 'Edit') {
+        await editQuestion({
+          questionId: parsedQuestionDetails.question.id,
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+        })
+        router.push(`/question/${parsedQuestionDetails.question.id}`)
+      } else {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          authorId: userId,
+          path: pathname,
+        })
 
-      // router.push('/')
-      //   }
+        router.push('/')
+      }
     } catch (error) {
       //
       console.log(error)
@@ -168,7 +171,9 @@ const Question: FC<QuestionProps> = ({ userId, type, questionDetails }) => {
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     onBlur={field.onBlur}
                     onEditorChange={(connect) => field.onChange(connect)}
-                    initialValue={parsedQuestionDetails?.content || ''}
+                    initialValue={
+                      parsedQuestionDetails?.question?.content || ''
+                    }
                     init={{
                       height: 350,
                       menubar: false,

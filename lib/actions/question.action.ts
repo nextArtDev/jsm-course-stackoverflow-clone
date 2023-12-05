@@ -470,7 +470,7 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     // console.log(tagsQuestions.map((tagsQuestion) => tagsQuestion.id))
     const tagIds = tagsQuestions.map((tagsQuestion) => tagsQuestion.id)
 
-    const questionUpdate = await prisma.question.update({
+    await prisma.question.update({
       where: { id: questionId },
       data: {
         tags: {
@@ -565,45 +565,61 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
   }
 }
 
-// export async function editQuestion(params: EditQuestionParams) {
-//   try {
-//     connectToDatabase()
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    // connectToDatabase()
 
-//     const { questionId, title, content, path } = params
+    const { questionId, title, content, path } = params
 
-//     const question = await Question.findById(questionId).populate('tags')
+    // const question = await Question.findById(questionId).populate('tags')
 
-//     if (!question) return
+    const question = await prisma.question.findUnique({
+      where: { id: questionId },
+      include: { tags: true },
+    })
 
-//     question.title = title
-//     question.content = content
+    if (!question) return
+    await prisma.question.update({
+      where: { id: questionId },
+      data: {
+        title,
+        content,
+      },
+    })
 
-//     await question.save()
+    // question.title = title
+    // question.content = content
 
-//     revalidatePath(path)
-//   } catch (error) {
-//     console.log(error)
-//     throw error
-//   }
-// }
+    // await question.save()
 
-// export async function getHotQuestions() {
-//   try {
-//     connectToDatabase()
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
-//     const hotQuestions = await Question.find({})
-//       .sort({
-//         views: -1,
-//         upvotes: -1,
-//       })
-//       .limit(5)
+export async function getHotQuestions() {
+  try {
+    // connectToDatabase()
 
-//     return hotQuestions
-//   } catch (error) {
-//     console.log(error)
-//     throw error
-//   }
-// }
+    // const hotQuestions = await Question.find({})
+    //   .sort({
+    //     views: -1,
+    //     upvotes: -1,
+    //   })
+    //   .limit(5)
+
+    const hotQuestions = await prisma.question.findMany({
+      orderBy: [{ upvoters: { _count: 'desc' } }, { views: 'desc' }],
+      take: 5,
+    })
+    return hotQuestions
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 // export async function getRecommendedQuestions(params: RecommendedParams) {
 //   try {
