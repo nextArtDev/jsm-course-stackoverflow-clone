@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { Badge } from '../ui/badge'
 
 interface RenderTagProps {
-  id: string
+  id: string | string
   name: string
   totalQuestions?: number
   showCount?: boolean
@@ -16,7 +16,7 @@ const RenderTag: FC<RenderTagProps> = ({
   showCount,
 }) => {
   return (
-    <Link href={`/tag/${id}`} className="flex items-center gap-2 ">
+    <Link href={`/tags/${id}`} className="flex items-center gap-2 ">
       <Badge className="rounded-md border-none bg-gray-600 px-4 py-2 uppercase dark:bg-gray-300 dark:text-gray-900">
         {name}
       </Badge>

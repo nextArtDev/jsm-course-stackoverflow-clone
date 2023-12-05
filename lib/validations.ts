@@ -22,18 +22,18 @@ export const QuestionSchema = z.object({
     .array(
       z
         .string()
-        .min(3, {
-          message: 'تگ باید حداقل 3 حرف باشد.',
+        .min(1, {
+          message: 'تگ باید حداقل 1 حرف باشد.',
         })
         .max(15)
     )
     .max(15, {
-      message: 'تگ نمی‌تواند بیش از 130 حرف باشد.',
+      message: 'تگ نمی‌تواند بیش از 15 حرف باشد.',
     }),
 })
 
 export const AnswerSchema = z.object({
-  answer: z.string().min(20),
+  answer: z.string().min(10),
 })
 
 export const ProfileSchema = z.object({
@@ -42,8 +42,8 @@ export const ProfileSchema = z.object({
   //   message: 'Username must be at least 2 characters.',
   // })
   // .max(50),
-  username: z.string().min(5).max(50),
-  bio: z.string().min(10).max(150),
-  portfolioWebsite: z.string().url(),
-  location: z.string().min(3).max(50),
+  // username: z.string().min(5).max(50),
+  bio: z.optional(z.string().min(10).max(150)),
+  portfolioWebsite: z.optional(z.string().url()),
+  location: z.optional(z.string().min(3).max(50)),
 })

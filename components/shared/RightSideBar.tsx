@@ -8,39 +8,41 @@ import { getTopPopularTags } from '@/lib/actions/tag.actions'
 import { ChevronLeft } from 'lucide-react'
 interface RightSideBarProps {}
 
-const hotQuestions = [
-  {
-    _id: 1,
-    title:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
-  },
-  {
-    _id: 2,
-    title:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
-  },
-  {
-    _id: 3,
-    title:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
-  },
-  {
-    _id: 4,
-    title:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
-  },
-]
+// const hotQuestions = [
+//   {
+//     _id: 1,
+//     title:
+//       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
+//   },
+//   {
+//     _id: 2,
+//     title:
+//       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
+//   },
+//   {
+//     _id: 3,
+//     title:
+//       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
+//   },
+//   {
+//     _id: 4,
+//     title:
+//       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, necessitatibus?',
+//   },
+// ]
 
-const PopularTags = [
-  { id: '1', name: 'javascript', totalQuestios: 5 },
-  { id: '2', name: 'nextjs', totalQuestios: 5 },
-  { id: '3', name: 'nodejs', totalQuestios: 4 },
-  { id: '4', name: 'threejs', totalQuestios: 2 },
-  { id: '5', name: 'mongodb', totalQuestios: 5 },
-]
+// const PopularTags = [
+//   { id: '1', name: 'javascript', totalQuestios: 5 },
+//   { id: '2', name: 'nextjs', totalQuestios: 5 },
+//   { id: '3', name: 'nodejs', totalQuestios: 4 },
+//   { id: '4', name: 'threejs', totalQuestios: 2 },
+//   { id: '5', name: 'mongodb', totalQuestios: 5 },
+// ]
 const RightSideBar: FC<RightSideBarProps> = async () => {
-  // const hotQuestions = await getHotQuestions()
-  // const PopularTags = await getTopPopularTags()
+  const hotQuestions = await getHotQuestions()
+  const PopularTags = await getTopPopularTags()
+
+  // console.log(PopularTags)
 
   return (
     <section className="font-farsiSnapReg sticky right-0 top-0 flex min-h-screen w-[350px] flex-col overflow-y-auto border-l border-gray-700 bg-transparent p-6 pt-24 shadow max-xl:hidden ">
@@ -52,12 +54,12 @@ const RightSideBar: FC<RightSideBarProps> = async () => {
       <div className="mt-8 flex w-full flex-col gap-[30px] text-sm text-gray-400">
         {hotQuestions.map((question) => (
           <Link
-            href={`/question/${question._id}`}
-            key={question._id}
+            href={`/question/${question.id}`}
+            key={question.id}
             className="flex cursor-pointer items-center justify-between gap-3"
           >
             <p>{question.title}</p>
-            <ChevronLeft width={40} height={40} />
+            <ChevronLeft width={30} height={30} />
             {/* <Image src={Chevron} alt="chevron right" width={20} height={20} /> */}
           </Link>
         ))}
@@ -68,9 +70,9 @@ const RightSideBar: FC<RightSideBarProps> = async () => {
           {PopularTags.map((tag) => (
             <RenderTag
               key={tag.id}
-              id={tag.id}
+              id={tag.id.toString()}
               name={tag.name}
-              totalQuestions={tag.totalQuestios}
+              totalQuestions={tag.numberOfQuestions}
               showCount
             />
           ))}
