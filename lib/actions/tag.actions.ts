@@ -1,15 +1,11 @@
 'use server'
 
-import User from '@/database/user.model'
-import { connectToDatabase } from '../mongoose'
 import {
   GetAllTagsParams,
   GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams,
 } from './shared.types'
-import Tag, { ITag } from '@/database/tag.model'
-import Question from '@/database/question.model'
-import { FilterQuery } from 'mongoose'
+
 import { prisma } from '../prisma'
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
@@ -102,7 +98,16 @@ export async function getAllTags(params: GetAllTagsParams) {
     //   .sort(sortOptions)
 
     const tags = await prisma.tag.findMany({
-      where: query,
+      where: {
+        ...query,
+        AND: [
+          {
+            questions: {
+              some: {}, // This ensures that the tags returned have at least one question connected
+            },
+          },
+        ],
+      },
       include: {
         questions: true,
       },
@@ -207,6 +212,11 @@ export async function getTopPopularTags() {
     // ])
     // Get the top 5 popular tags based on the number of questions
     const populars = await prisma.tag.findMany({
+      where: {
+        questions: {
+          some: {}, // This ensures that the tags returned have at least one question connected
+        },
+      },
       take: 5,
       include: { questions: true },
       orderBy: {

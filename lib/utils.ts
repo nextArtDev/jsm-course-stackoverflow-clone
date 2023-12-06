@@ -73,15 +73,21 @@ interface UrlQueryParams {
 }
 
 export const fromUrlQuery = ({ params, key, value }: UrlQueryParams) => {
+  // accessing the current url
   const currentUrl = qs.parse(params)
+  // query-string package automatically gives you the search params
 
+  // it only updates the one we want to update, while keeping everything else the same in component's useState
   currentUrl[key] = value
 
   return qs.stringifyUrl(
     {
+      // base url
       url: window.location.pathname,
+      // current url
       query: currentUrl,
     },
+    // options: we don't need null values
     { skipNull: true }
   )
 }
