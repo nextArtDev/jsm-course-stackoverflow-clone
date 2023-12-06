@@ -54,8 +54,7 @@ const questions = [
 ]
 export default async function Home({ searchParams }: SearchParamsProps) {
   const currentUser = await getCurrentUser()
-  // console.log('user', currentUser?.name)
-  // const userId = '12346'
+
   const userId = currentUser?.id
 
   let result

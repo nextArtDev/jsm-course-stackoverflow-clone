@@ -36,7 +36,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           route="/"
           iconPosition="left"
           imgSrc={searchImage}
-          placeholder="Search for Question"
+          placeholder="جست و جوی سوال"
           otherClasses="flex-1"
         />
         <Filter

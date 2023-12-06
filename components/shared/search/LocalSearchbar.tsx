@@ -26,18 +26,22 @@ const LocalSearchbar: FC<LocalSearchbarProps> = ({
 
   const query = searchParams.get('q')
 
+  // initial value is "(query || '')" because we want to automatically populate alder "query" with new search
   const [search, setSearch] = useState(query || '')
 
+  // to reflect search input values to url query
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (search) {
         const newUrl = fromUrlQuery({
+          // we pass params because there could be other params like category, filtering and ...
           params: searchParams.toString(),
           key: 'q',
           value: search,
         })
         router.push(newUrl, { scroll: false })
       } else if (pathname === route) {
+        // if we clear up the search input
         const newUrl = removeKeysFromUrlQuery({
           params: searchParams.toString(),
           keysToRemove: ['q'],
@@ -46,7 +50,8 @@ const LocalSearchbar: FC<LocalSearchbarProps> = ({
         router.push(newUrl, { scroll: false })
       }
     }, 300)
-    return clearTimeout(delayDebounceFn)
+
+    return () => clearTimeout(delayDebounceFn)
   }, [search, route, pathname, router, searchParams, query])
 
   return (
