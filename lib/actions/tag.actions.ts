@@ -186,9 +186,9 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     })
 
     // if (!tag) throw new Error('User not found')
-    if (!tag) return
 
     // const isNext = tags.question.length > pageSize
+    if (!tag) return
     const isNext = tag.questions.length > pageSize
 
     const questions = tag.questions

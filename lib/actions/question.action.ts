@@ -36,16 +36,16 @@ export async function getQuestions(params: GetQuestionsParams) {
     let orderByOptions: any = {} // This will be used to define the sorting options
 
     switch (filter) {
-      case 'جدیدترین':
-        orderByOptions = { createdAt: 'desc' }
+      case 'newest':
+        orderByOptions = { created_at: 'desc' }
         break
-      case 'پرتکرار':
+      case 'frequent':
         orderByOptions = { views: 'desc' }
         break
-      case 'بدون جواب':
+      case 'unanswered':
         orderByOptions = {
           answers: {
-            _count: 'desc',
+            _count: 'asc',
           },
         }
 
@@ -73,7 +73,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     // Calculate if there are more questions to be fetched
     const isNext = totalQuestions > skipAmount + questions.length
-
+    // q.l: 101 => pages: 4 * skipAmount: 20 + lastPage: 20 = 100
     // const query: FilterQuery<typeof Question> = {}
 
     // if (searchQuery) {
