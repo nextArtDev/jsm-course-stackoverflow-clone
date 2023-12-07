@@ -24,7 +24,7 @@ const Pagination: FC<PaginationProps> = ({ pageNumber = 1, isNext }) => {
     })
     router.push(newUrl)
   }
-  //   if (!isNext && pageNumber === 1) return null
+  if (!isNext && pageNumber === 1) return null
   return (
     <div className="flex w-full items-center justify-center gap-2">
       <Button
@@ -32,7 +32,7 @@ const Pagination: FC<PaginationProps> = ({ pageNumber = 1, isNext }) => {
         onClick={() => handleNavigation('prev')}
         className="flex min-h-[36px] items-center justify-center gap-2 border"
       >
-        <p>prev</p>
+        <p>قبلی</p>
       </Button>
       <div className="flex items-center  justify-center rounded-md bg-rose-500 px-3.5 py-2">
         <p className="font-semibold text-slate-200 ">{pageNumber}</p>
@@ -42,7 +42,7 @@ const Pagination: FC<PaginationProps> = ({ pageNumber = 1, isNext }) => {
         onClick={() => handleNavigation('next')}
         className="flex min-h-[36px] items-center justify-center gap-2 border"
       >
-        <p>next</p>
+        <p>بعدی</p>
       </Button>
     </div>
   )

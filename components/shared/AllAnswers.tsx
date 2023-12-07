@@ -81,7 +81,9 @@ const AllAnswers: FC<AllAnswersProps> = async ({
           </article>
         ))}
       </div>
-      <Pagination pageNumber={page ? +page : 1} isNext={result.isNext} />
+      <div className="mt-10 w-full">
+        <Pagination pageNumber={page ? +page : 1} isNext={result.isNext} />
+      </div>
     </div>
   )
 }

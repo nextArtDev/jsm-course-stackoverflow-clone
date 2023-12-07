@@ -102,10 +102,10 @@ export async function getAnswers(params: GetAnswersParams) {
 
     switch (sortBy) {
       case 'highestUpvotes':
-        sortOptions = { upvotes: 'desc' }
+        sortOptions = { upvoters: { _count: 'desc' } }
         break
       case 'lowestUpvotes':
-        sortOptions = { upvotes: 'asc' }
+        sortOptions = { upvoters: { _count: 'asc' } }
         break
       case 'recent':
         sortOptions = { created_at: 'desc' }

@@ -1,7 +1,5 @@
 'use server'
 
-import User from '@/database/user.model'
-import { FilterQuery } from 'mongoose'
 import { connectToDatabase } from '../mongoose'
 import {
   GetAllUsersParams,
@@ -275,8 +273,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     if (!user) throw new Error('User not found')
 
-    const isNext = user.saved?.length > pageSize
-    if (!user) return
+    const isNext = user.saved.length > pageSize
 
     const savedQuestions = user.saved
 
@@ -530,7 +527,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase()
 
-    const { userId, page = 1, pageSize = 10 } = params
+    const { userId, page = 1, pageSize = 1 } = params
     const skipAmount = (page - 1) * pageSize
 
     // const totalAnswers = await Answer.countDocuments({
@@ -569,7 +566,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     })
 
     const isNext = totalAnswers > skipAmount + userAnswers.length
-
+    // console.log(isNext) // true-false
     return { answers: userAnswers, totalAnswers, isNext }
   } catch (error) {
     console.log(error)
