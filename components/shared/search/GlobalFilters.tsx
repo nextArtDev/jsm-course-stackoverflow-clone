@@ -7,7 +7,7 @@ import { FC, useState } from 'react'
 
 interface GlobalFiltersProps {}
 
-const GlobalFilters: FC<GlobalFiltersProps> = ({}) => {
+const GlobalFilters: FC<GlobalFiltersProps> = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -34,20 +34,18 @@ const GlobalFilters: FC<GlobalFiltersProps> = ({}) => {
     }
   }
   return (
-    <div className="flex items-center gap-5 px-5">
-      <p className="font-semibold">Type:</p>
-      <div className="flex gap-3">
+    <div className=" flex items-center gap-5 px-5">
+      <div className="flex items-center gap-6">
+        <p className="font-semibold">نوع:</p>
         {GlobalSearchFilters.map((item) => (
           <Button
             key={item.value}
             onClick={() => handleTypeClick(item.value)}
             className={cn(
-              `rounded-full hover:text-slate-500 hover:bg-none`,
-              active === item.value
-                ? 'bg-rose-400 text-slate-200 '
-                : ''
+              `rounded-full hover:text-slate-500 hover:bg-rose-300`,
+              active === item.value ? 'bg-rose-400 text-slate-200 ' : ''
             )}
-            variant={'outline'}
+            variant={'secondary'}
           >
             {item.name}
           </Button>
