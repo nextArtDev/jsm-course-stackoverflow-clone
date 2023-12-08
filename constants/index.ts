@@ -147,19 +147,19 @@ export const HomePageFilters = [
 ]
 export const GlobalSearchFilters = [
   {
-    name: 'Question',
+    name: 'سوال',
     value: 'question',
   },
   {
-    name: 'Answer',
+    name: 'جواب',
     value: 'answer',
   },
   {
-    name: 'User',
+    name: 'کاربر',
     value: 'user',
   },
   {
-    name: 'Tag',
+    name: 'تگ',
     value: 'tag',
   },
 ]

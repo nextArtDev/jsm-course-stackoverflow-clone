@@ -9,7 +9,7 @@ import { globalSearch } from '@/lib/actions/general.action'
 
 interface GlobalResultProps {}
 
-const GlobalResult: FC<GlobalResultProps> = ({}) => {
+const GlobalResult: FC<GlobalResultProps> = () => {
   const searchParams = useSearchParams()
 
   const [result, setResult] = useState([
@@ -31,6 +31,7 @@ const GlobalResult: FC<GlobalResultProps> = ({}) => {
         const res = await globalSearch({ query: global, type })
 
         setResult(JSON.parse(res))
+        console.log(result)
       } catch (error) {
         console.log(error)
       } finally {
@@ -57,17 +58,20 @@ const GlobalResult: FC<GlobalResultProps> = ({}) => {
   }
 
   return (
-    <div className="absolute left-12 z-10 mt-3 w-[90%] rounded-xl bg-slate-500 py-5 shadow-sm ">
+    <div
+      dir="rtl"
+      className="absolute left-12 z-10 mt-3 w-[90%] rounded-xl bg-slate-500 py-5 shadow-sm "
+    >
       <p className="px-5">
         <GlobalFilters />
       </p>
       <div className="my-5 h-[1px] bg-slate-400 " />
       <div className="space-y-5">
-        <p className="px-5">Top Result</p>
+        <p className="px-5">بهترین نتایج</p>
         {isLoading ? (
           <div className="flex flex-col items-center justify-center px-5">
             <Loader2 size={40} className="animate-spin" />
-            <p className="animate-pulse">Browsing the Entire database</p>
+            <p className="animate-pulse">جست‌وجوی همه</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -83,17 +87,17 @@ const GlobalResult: FC<GlobalResultProps> = ({}) => {
                     alt="tags"
                     width={18}
                     height={18}
-                    className="object-contain mt-1"
+                    className="mt-1 object-contain"
                   />
                   <div className="flex flex-col">
                     <p className="line-clamp-1">{item.title}</p>
-                    <p className="font-bold mt-1">{item.type}</p>
+                    <p className="mt-1 font-bold">{item.type}</p>
                   </div>
                 </Link>
               ))
             ) : (
               <div className="flex flex-col items-center justify-center px-5 ">
-                <p className="px-5 py-2.5">Oops, no results found.</p>
+                <p className="px-5 py-2.5">نتیجه‌ای یافت نشد!</p>
               </div>
             )}
           </div>

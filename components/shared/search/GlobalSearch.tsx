@@ -50,6 +50,7 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
         if (query) {
           const newUrl = removeKeysFromUrlQuery({
             params: searchParams.toString(),
+            // we don't want to do global and local search at the same time
             keysToRemove: ['global', 'type'],
           })
           // to not scroll to top of the page
