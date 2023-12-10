@@ -168,20 +168,20 @@ export async function createQuestion(params: CreateQuestionParams) {
     })
 
     // Create an interaction record
-    // const interaction = await prisma.interaction.create({
-    //   data: {
-    //     user: { connect: { id: authorId } },
-    //     action: 'ask_question',
-    //     question: { connect: { id: question.id } },
-    //     tags: { connect: tagDocuments.map((id) => ({ id })) },
-    //   },
-    // })
+    await prisma.interaction.create({
+      data: {
+        user: { connect: { id: authorId } },
+        action: 'ask_question',
+        question: { connect: { id: question.id } },
+        tags: { connect: tagDocuments.map((id) => ({ id })) },
+      },
+    })
     // console.log(interaction)
-    // // Increment author's reputation by +5 for creating a question
-    // await prisma.user.update({
-    //   where: { id: authorId },
-    //   data: { reputation: { increment: 5 } },
-    // })
+    // Increment author's reputation by +5 for creating a question
+    await prisma.user.update({
+      where: { id: authorId },
+      data: { reputation: { increment: 5 } },
+    })
 
     // Create the tags or get them if they already exist
 
@@ -260,7 +260,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
 
 export async function upvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase()
+    // connectToDatabase()
 
     const { questionId, userId, hasupVoted, hasdownVoted, path } = params
 
@@ -318,7 +318,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     // Increment author's reputation based on the vote action
     await prisma.user.update({
       where: { id: question.authorId },
-      data: { reputation: { increment: hasupVoted ? -10 : 10 } },
+      data: { reputation: { increment: hasupVoted ? -1 : 1 } },
     })
 
     // Increment voter's reputation

@@ -55,7 +55,7 @@ export async function createAnswer(params: CreateAnswerParams) {
     //   $push: { answers: newAnswer.id },
     // })
     const questionObject = await prisma.question.update({
-      where: { id: author },
+      where: { id: question },
       data: {
         answers: {
           connect: {
@@ -65,7 +65,9 @@ export async function createAnswer(params: CreateAnswerParams) {
       },
       include: { tags: true },
     })
-
+    if (!questionObject) throw Error('سوال حذف شده است.')
+    // console.log({ questionObject })
+    // console.log(questionObject.tags.map((tag) => tag.id))
     // Update the question to push the new answer
 
     // await Interaction.create({
@@ -76,16 +78,20 @@ export async function createAnswer(params: CreateAnswerParams) {
     //   tags: questionObject.tags,
     // })
     // await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } })
-    // await prisma.interaction.create({
-    //   data: {
-    //     userId: author,
-    //     action: 'answer',
-    //     question: { connect: { id: question } },
-    //     answer: { connect: { id: newAnswer.id } },
-    //     tags:questionObject.tags
-    //   },
-    // })
-
+    await prisma.interaction.create({
+      data: {
+        answerId: newAnswer.id,
+        userId: author,
+        action: 'answer',
+        questionId: question,
+        tags: { connect: questionObject.tags.map((id) => id) },
+      },
+    })
+    // console.log({ interact })
+    await prisma.user.update({
+      where: { id: author },
+      data: { reputation: { increment: 10 } },
+    })
     revalidatePath(path)
   } catch (error) {}
 }
