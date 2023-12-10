@@ -24,6 +24,7 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
     const handleOutsideClick = (event: any) => {
       if (
         searchContainerRef.current &&
+        // @ts-ignore
         !searchContainerRef.current.contains(event.target)
       ) {
         setIsOpen(false)
@@ -37,6 +38,7 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
       document.removeEventListener('click', handleOutsideClick)
     }
   }, [pathname])
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (search) {
@@ -58,7 +60,7 @@ const GlobalSearch: FC<GlobalSearchProps> = () => {
         }
       }
     }, 300)
-    return clearTimeout(delayDebounceFn)
+    return () => clearTimeout(delayDebounceFn)
   }, [search, router, pathname, searchParams, query])
 
   return (

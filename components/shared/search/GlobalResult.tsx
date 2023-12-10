@@ -31,7 +31,6 @@ const GlobalResult: FC<GlobalResultProps> = () => {
         const res = await globalSearch({ query: global, type })
 
         setResult(JSON.parse(res))
-        console.log(result)
       } catch (error) {
         console.log(error)
       } finally {
@@ -91,7 +90,7 @@ const GlobalResult: FC<GlobalResultProps> = () => {
                   />
                   <div className="flex flex-col">
                     <p className="line-clamp-1">{item.title}</p>
-                    <p className="mt-1 font-bold">{item.type}</p>
+                    {/* <p className="mt-1 font-bold">{item.type}</p> */}
                   </div>
                 </Link>
               ))

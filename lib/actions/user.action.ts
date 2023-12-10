@@ -1,6 +1,10 @@
 'use server'
 
+import { BadgeCriteriaType } from '@/types'
+import { revalidatePath } from 'next/cache'
 import { connectToDatabase } from '../mongoose'
+import { prisma } from '../prisma'
+import { assignBadges } from '../utils'
 import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
@@ -9,13 +13,6 @@ import {
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from './shared.types'
-import { revalidatePath } from 'next/cache'
-import Tag from '@/database/tag.model'
-import Question from '@/database/question.model'
-import Answer from '@/database/answer.model'
-import { BadgeCriteriaType } from '@/types'
-import { assignBadges } from '../utils'
-import { prisma } from '../prisma'
 
 export async function getUserByID(params: any) {
   try {
@@ -431,23 +428,23 @@ export async function getUserInfo(params: GetUserByIdParams) {
 
     const criteria = [
       {
-        type: 'QUESTION_COUNT',
+        type: 'QUESTION_COUNT' as BadgeCriteriaType,
         count: totalQuestions,
       },
       {
-        type: 'ANSWER_COUNT',
+        type: 'ANSWER_COUNT' as BadgeCriteriaType,
         count: totalAnswers,
       },
       {
-        type: 'QUESTION_UPVOTES',
+        type: 'QUESTION_UPVOTES' as BadgeCriteriaType,
         count: questionUpvotes,
       },
       {
-        type: 'ANSWER_UPVOTES',
+        type: 'ANSWER_UPVOTES' as BadgeCriteriaType,
         count: answerUpvotes,
       },
       {
-        type: 'TOTAL_VIEWS',
+        type: 'TOTAL_VIEWS' as BadgeCriteriaType,
         count: questionViews._sum.views || 0,
       },
     ]

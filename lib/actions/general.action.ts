@@ -12,12 +12,11 @@ const searchableTypes = ['question', 'user', 'answer', 'tag']
 export async function globalSearch(params: SearchParams) {
   try {
     // await connectToDatabase()
-    console.log(params)
 
     const { query, type } = params
     // const regexQuery = { $regex: query, $options: 'i' }
 
-    const regexQuery = { contains: query, mode: 'insensitive' }
+    const regexQuery = { contains: query }
 
     let results = []
 
@@ -96,11 +95,12 @@ export async function globalSearch(params: SearchParams) {
           ...queryResults.map((item) => ({
             title: type === 'answer' ? `جواب شامل ${query}` : item[searchField],
             type,
+
             id:
               type === 'user'
                 ? item.userId
                 : type === 'answer'
-                ? item.question
+                ? item.questionId
                 : item.id,
           }))
         )
@@ -128,11 +128,11 @@ export async function globalSearch(params: SearchParams) {
           type === 'user'
             ? item.userId
             : type === 'answer'
-            ? item.question
+            ? item.questionId
             : item.id,
       }))
     }
-    console.log(results)
+    // console.log(results)
     return JSON.stringify(results)
   } catch (error) {
     console.log(error)
