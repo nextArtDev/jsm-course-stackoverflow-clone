@@ -321,7 +321,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       data: { reputation: { increment: hasupVoted ? -1 : 1 } },
     })
 
-    // Increment voter's reputation
+    // Increment authors reputation by +10/-10 for receiving an upvote/downvote to the question
     await prisma.user.update({
       where: { id: userId },
       data: { reputation: { increment: hasupVoted ? -10 : 10 } },
